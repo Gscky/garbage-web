@@ -33,8 +33,8 @@ function Section({
         size === 'default' && 'py-16 md:py-24',
         size === 'lg' && 'py-20 md:py-32',
         // Fondos
-        background === 'white' && 'bg-white',
-        background === 'alt' && 'bg-[#F5F5F5]',
+        background === 'white' && 'bg-[#0A0A0A]',
+        background === 'alt' && 'bg-[#111111]',
         // Ancho completo
         'w-full',
         className

@@ -5,13 +5,15 @@ export const copy = {
       { label: 'Productos', href: '#productos' },
       { label: 'Por qué elegirnos', href: '#por-que-elegirnos' },
       { label: 'Proceso', href: '#proceso' },
+      { label: 'Trabajos', href: '#galeria' },
+      { label: 'FAQ', href: '#faq' },
       { label: 'Contacto', href: '#contacto' },
     ],
     cta: 'Cotizar ahora'
   },
 
   hero: {
-    eyebrow: '50+ años fabricando en Chile',
+    eyebrow: '30 años fabricando en Chile',
     headline: 'Limpiapiés con tu logo, entrega a todo Chile.',
     subheadline: 'Fabricamos limpiapiés y alfombras personalizadas para empresas que necesitan calidad real y cumplimiento. Líder, Unimarc, Paris y cientos de empresas más ya trabajan con nosotros.',
     cta_primary: 'Cotizar ahora',
@@ -74,8 +76,8 @@ export const copy = {
     headline: 'Experiencia, cumplimiento y fabricación propia',
     items: [
       {
-        titulo: '50+ años en el mercado',
-        descripcion: 'Llevamos más de medio siglo fabricando limpiapiés para las empresas más exigentes de Chile. Ese historial no se improvisa.',
+        titulo: '30 años en el mercado',
+        descripcion: 'Llevamos 30 años fabricando limpiapiés para las empresas más exigentes de Chile. Ese historial no se improvisa.',
         icono_sugerido: 'Escudo con número 50 o medalla de reconocimiento'
       },
       {
@@ -114,12 +116,12 @@ export const copy = {
       {
         numero: '01',
         titulo: 'Nos contactás',
-        descripcion: 'Completás el formulario o nos llamás por teléfono. Nos contás qué necesitás: tipo de producto, cantidad, medidas y si llevará diseño personalizado.'
+        descripcion: 'Completa el formulario o llámanos por teléfono. Cuéntanos qué necesitas: tipo de producto, cantidad, medidas y si llevará diseño personalizado.'
       },
       {
         numero: '02',
         titulo: 'Recibís la cotización',
-        descripcion: 'Con esa información te enviamos un presupuesto detallado. Sin cobros ocultos ni sorpresas. Si tenés preguntas, las respondemos de inmediato.'
+        descripcion: 'Con esa información te enviamos un presupuesto detallado. Sin cobros ocultos ni sorpresas. Si tienes preguntas, las respondemos de inmediato.'
       },
       {
         numero: '03',
@@ -139,9 +141,9 @@ export const copy = {
     headline: 'Respaldo real, no promesas',
     items: [
       {
-        numero: '50+',
+        numero: '30+',
         label: 'Años en el mercado',
-        descripcion: 'Fabricando limpiapiés en Chile desde antes que muchos competidores existieran'
+        descripcion: 'Fabricando limpiapiés en Chile desde 1994'
       },
       {
         numero: '500+',
@@ -163,15 +165,15 @@ export const copy = {
 
   cta_final: {
     eyebrow: 'Listo para cotizar',
-    headline: 'Pedí tu cotización hoy y recibí respuesta en menos de 24 horas',
+    headline: 'Pide tu cotización hoy y recibe respuesta en menos de 24 horas',
     sub: 'Contanos qué necesitás y te preparamos un presupuesto ajustado a tu empresa, sin compromiso.',
     cta: 'Cotizar ahora',
     garantia: 'Sin compromiso de compra. Te respondemos dentro de las 24 horas hábiles.'
   },
 
   contacto: {
-    headline: 'Cotizá con nosotros',
-    sub: 'Completá el formulario o comunicate directamente. Estamos disponibles para atenderte de lunes a viernes.',
+    headline: 'Cotiza con nosotros',
+    sub: 'Completa el formulario o comunícate directamente. Estamos disponibles para atenderte de lunes a viernes.',
     campos: [
       {
         id: 'nombre',
@@ -233,7 +235,7 @@ export const copy = {
   },
 
   footer: {
-    tagline: 'Limpiapiés personalizados para las empresas de Chile, desde 1974.',
+    tagline: '30 años fabricando limpiapiés para las empresas de Chile.',
     copyright: '© 2024 Garbage. Todos los derechos reservados.',
     links: [
       { label: 'Productos', href: '#productos' },

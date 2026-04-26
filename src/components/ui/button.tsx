@@ -16,7 +16,7 @@ const buttonVariants = cva(
     'border border-transparent',
     'transition-all duration-200 ease-in-out',
     'cursor-pointer select-none',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E63000] focus-visible:ring-offset-2',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9] focus-visible:ring-offset-2',
     'disabled:opacity-50 disabled:pointer-events-none',
     'relative overflow-hidden',
   ].join(' '),
@@ -24,20 +24,20 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: [
-          'bg-[#E63000] text-white border-[#E63000]',
-          'hover:bg-[#C42800] hover:border-[#C42800]',
-          'hover:shadow-[0_8px_24px_rgba(230,48,0,0.32)]',
-          'active:bg-[#A82200]',
+          'bg-[#0A1F3F] text-white border-[#0A1F3F]',
+          'hover:bg-[#0F2E5C] hover:border-[#0F2E5C]',
+          'hover:shadow-[0_8px_24px_rgba(10,31,63,0.32)]',
+          'active:bg-[#071525]',
         ].join(' '),
         secondary: [
-          'bg-transparent text-[#E63000] border-[#E63000]',
-          'hover:bg-[rgba(230,48,0,0.06)] hover:border-[#C42800] hover:text-[#C42800]',
-          'active:bg-[rgba(230,48,0,0.12)]',
+          'bg-transparent text-[#0A1F3F] border-[#0A1F3F]',
+          'hover:bg-[rgba(10,31,63,0.06)] hover:border-[#0F2E5C] hover:text-[#0F2E5C]',
+          'active:bg-[rgba(10,31,63,0.12)]',
         ].join(' '),
         ghost: [
-          'bg-transparent text-[#E63000] border-transparent',
-          'hover:bg-[rgba(230,48,0,0.06)] hover:text-[#C42800]',
-          'active:bg-[rgba(230,48,0,0.12)]',
+          'bg-transparent text-[#0A1F3F] border-transparent',
+          'hover:bg-[rgba(10,31,63,0.06)] hover:text-[#0F2E5C]',
+          'active:bg-[rgba(10,31,63,0.12)]',
         ].join(' '),
       },
       size: {

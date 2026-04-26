@@ -1,143 +1,246 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { motion } from 'framer-motion'
-import { copy } from '@/lib/copy'
-import MobileMenu from './MobileMenu'
+import { useState, useEffect } from 'react'
+import { useTab, TABS } from '@/context/TabContext'
+import { NeonButton } from '@/components/ui/neon-button'
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false)
+  const { activeTab, setActiveTab } = useTab()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const handleScroll = useCallback(() => {
-    setScrolled(window.scrollY > 50)
+  // Cerrar drawer al cambiar a desktop
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth >= 768) setMenuOpen(false) }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
   }, [])
 
+  // Bloquear scroll del body cuando drawer abierto
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
 
-  // Cierra el menú mobile si se agranda la ventana
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) setMenuOpen(false)
-    }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const handleNavClick = (href: string) => {
+  const handleTab = (id: string) => {
+    setActiveTab(id as typeof activeTab)
     setMenuOpen(false)
-    const id = href.replace('#', '')
-    const el = document.getElementById(id)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
   }
 
   return (
     <>
       <header
-        role="banner"
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-          scrolled
-            ? 'bg-white/96 backdrop-blur-[12px] shadow-[0_1px_3px_rgba(26,26,26,0.08),0_1px_2px_rgba(26,26,26,0.06)] border-b border-[#E5E5E5]'
-            : 'bg-transparent'
-        }`}
-        style={{ height: '72px' }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          backgroundColor: '#FFFFFF',
+          borderBottom: '1px solid rgba(10,22,40,0.08)',
+          boxShadow: '0 2px 8px rgba(10,22,40,0.06)',
+        }}
       >
-        <div className="max-w-[1280px] mx-auto h-full flex items-center justify-between px-5 md:px-8 lg:px-10">
-
+        {/* ── Fila 1: Logo + CTA + Hamburger ─────────────────────────── */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '64px',
+            maxWidth: '1280px',
+            margin: '0 auto',
+            padding: '0 clamp(1.25rem, 4vw, 3rem)',
+          }}
+        >
           {/* Logo */}
-          <a
-            href="#"
-            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-            className="flex-shrink-0 text-xl font-black tracking-[-0.04em] text-[#1A1A1A] hover:text-[#E63000] transition-colors duration-200"
-            aria-label="Garbage — volver al inicio"
+          <button
+            onClick={() => handleTab('inicio')}
+            aria-label="Ir al inicio"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, lineHeight: 0 }}
           >
-            {copy.nav.logo}
-          </a>
+            <img
+              src="/images/logo.jpeg"
+              alt="Garbage"
+              loading="eager"
+              style={{ height: '40px', width: 'auto', display: 'block' }}
+            />
+          </button>
 
-          {/* Nav links — desktop */}
-          <nav
-            role="navigation"
-            aria-label="Navegación principal"
-            className="hidden md:flex items-center gap-8"
-          >
-            {copy.nav.links.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => handleNavClick(link.href)}
-                className="text-sm font-medium text-[#666666] hover:text-[#1A1A1A] transition-colors duration-200 bg-transparent border-none cursor-pointer p-0"
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
-
-          {/* CTA + Hamburguesa */}
-          <div className="flex items-center gap-3">
-            {/* CTA — desktop */}
-            <motion.a
-              href="#contacto"
-              onClick={(e) => { e.preventDefault(); handleNavClick('#contacto') }}
-              className="hidden md:inline-flex items-center px-6 py-[10px] rounded-md bg-[#E63000] text-white text-sm font-semibold tracking-[0.02em] transition-colors duration-200 hover:bg-[#C42800] active:bg-[#A82200] shadow-[0_8px_24px_rgba(230,48,0,0.22)]"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.15 }}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {/* Botón CTA — desktop */}
+            <NeonButton
+              variant="navy"
+              onClick={() => handleTab('cotizar')}
+              className="hidden md:inline-flex"
             >
-              {copy.nav.cta}
-            </motion.a>
+              Cotizar ahora
+            </NeonButton>
 
-            {/* Hamburguesa — mobile */}
+            {/* Hamburger — mobile only */}
             <button
-              className="flex md:hidden items-center justify-center w-11 h-11 rounded-md text-[#1A1A1A] hover:bg-[rgba(26,26,26,0.04)] transition-colors duration-200"
-              onClick={() => setMenuOpen((prev) => !prev)}
+              className="flex md:hidden"
+              onClick={() => setMenuOpen((v) => !v)}
               aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
               aria-expanded={menuOpen}
-              aria-controls="mobile-menu"
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '0.4rem',
+                color: '#0A1628',
+                alignItems: 'center',
+              }}
             >
-              <span className="sr-only">{menuOpen ? 'Cerrar' : 'Abrir'} menú</span>
-              <motion.div
-                className="w-5 flex flex-col gap-[5px] items-center"
-                animate={menuOpen ? 'open' : 'closed'}
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                style={{ width: '24px', height: '24px', transition: 'transform 0.2s' }}
               >
-                <motion.span
-                  className="block h-[2px] w-5 bg-[#1A1A1A] origin-center rounded-full"
-                  variants={{
-                    closed: { rotate: 0, y: 0 },
-                    open: { rotate: 45, y: 7 },
-                  }}
-                  transition={{ duration: 0.2 }}
-                />
-                <motion.span
-                  className="block h-[2px] w-5 bg-[#1A1A1A] rounded-full"
-                  variants={{
-                    closed: { opacity: 1, scaleX: 1 },
-                    open: { opacity: 0, scaleX: 0 },
-                  }}
-                  transition={{ duration: 0.15 }}
-                />
-                <motion.span
-                  className="block h-[2px] w-5 bg-[#1A1A1A] origin-center rounded-full"
-                  variants={{
-                    closed: { rotate: 0, y: 0 },
-                    open: { rotate: -45, y: -7 },
-                  }}
-                  transition={{ duration: 0.2 }}
-                />
-              </motion.div>
+                {menuOpen ? (
+                  <>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </>
+                ) : (
+                  <>
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                  </>
+                )}
+              </svg>
             </button>
           </div>
         </div>
+
+        {/* ── Fila 2: Tabs — desktop only ─────────────────────────────── */}
+        <nav
+          className="hidden md:block"
+          aria-label="Navegación por secciones"
+          style={{ borderTop: '1px solid rgba(10,22,40,0.06)' }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              maxWidth: '1280px',
+              margin: '0 auto',
+              padding: '0 clamp(1.25rem, 4vw, 3rem)',
+              overflowX: 'auto',
+            }}
+            className="scrollbar-none"
+          >
+            {TABS.map((tab) => {
+              const isActive = activeTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTab(tab.id)}
+                  style={{
+                    fontFamily: 'var(--font-dm-sans)',
+                    fontWeight: 500,
+                    fontSize: '0.78rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    padding: '0.9rem 1.2rem',
+                    background: 'none',
+                    borderTop: 'none',
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    borderBottom: isActive
+                      ? '2px solid #0A1628'
+                      : '2px solid transparent',
+                    color: isActive ? '#0A1628' : 'rgba(10,22,40,0.4)',
+                    cursor: 'pointer',
+                    transition: 'color 0.15s, border-bottom-color 0.15s',
+                    whiteSpace: 'nowrap',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) e.currentTarget.style.color = '#0A1628'
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) e.currentTarget.style.color = 'rgba(10,22,40,0.4)'
+                  }}
+                >
+                  {tab.label}
+                </button>
+              )
+            })}
+          </div>
+        </nav>
       </header>
 
-      <MobileMenu
-        isOpen={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        onNavClick={handleNavClick}
-      />
+      {/* ── Drawer mobile ──────────────────────────────────────────────── */}
+      {menuOpen && (
+        <div
+          className="md:hidden"
+          style={{
+            position: 'fixed',
+            top: '64px',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: '#0A1628',
+            zIndex: 49,
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '0.5rem 1.5rem 2rem',
+            overflowY: 'auto',
+          }}
+        >
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleTab(tab.id)}
+                style={{
+                  fontFamily: 'var(--font-dm-sans)',
+                  fontWeight: 500,
+                  fontSize: '1rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.5)',
+                  background: 'none',
+                  border: 'none',
+                  borderBottom: '1px solid rgba(255,255,255,0.07)',
+                  padding: '1.1rem 0',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'color 0.15s',
+                }}
+              >
+                {isActive && (
+                  <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FFFFFF', marginRight: '0.75rem', verticalAlign: 'middle' }} />
+                )}
+                {tab.label}
+              </button>
+            )
+          })}
+
+          {/* CTA dentro del drawer */}
+          <button
+            onClick={() => handleTab('cotizar')}
+            style={{
+              marginTop: '1.5rem',
+              backgroundColor: '#FFFFFF',
+              color: '#0A1628',
+              fontFamily: 'var(--font-dm-sans)',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              padding: '0.875rem',
+              borderRadius: '2px',
+              border: 'none',
+              cursor: 'pointer',
+              textAlign: 'center',
+            }}
+          >
+            Cotizar ahora
+          </button>
+        </div>
+      )}
     </>
   )
 }

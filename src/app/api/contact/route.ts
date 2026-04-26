@@ -110,6 +110,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { nombre, empresa, email, telefono, producto, mensaje } = parsed.data
+  const color = (body as Record<string, unknown>)['color'] as string | undefined
 
   // Verificar variable de entorno
   const destinatario = process.env.CONTACT_EMAIL
@@ -140,10 +141,6 @@ export async function POST(request: NextRequest) {
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${nombre}</td>
               </tr>
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Empresa</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${empresa}</td>
-              </tr>
-              <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Email</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">
                   <a href="mailto:${email}" style="color: #E63000;">${email}</a>
@@ -161,6 +158,14 @@ export async function POST(request: NextRequest) {
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Producto</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${producto}</td>
               </tr>
+              ${color ? `<tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Color</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${color}</td>
+              </tr>` : ''}
+              ${empresa ? `<tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Empresa</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${empresa}</td>
+              </tr>` : ''}
             </table>
             <div style="margin-top: 24px;">
               <p style="font-weight: 600; margin-bottom: 8px;">Mensaje:</p>
@@ -177,7 +182,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('[contact/route] Error de Resend:', error)
       return NextResponse.json(
-        { success: false, message: 'Algo falló al enviar. Intentá de nuevo o llamanos al +56 2 2683 6012.' },
+        { success: false, message: 'Algo falló al enviar. Intenta de nuevo o llámanos al +56 2 2683 6012.' },
         { status: 500 }
       )
     }
@@ -195,7 +200,7 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[contact/route] Error inesperado:', err)
     return NextResponse.json(
-      { success: false, message: 'Algo falló al enviar. Intentá de nuevo o llamanos al +56 2 2683 6012.' },
+      { success: false, message: 'Algo falló al enviar. Intenta de nuevo o llámanos al +56 2 2683 6012.' },
       { status: 500 }
     )
   }

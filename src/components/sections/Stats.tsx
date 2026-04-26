@@ -25,10 +25,10 @@ interface StatData {
 
 const STATS: StatData[] = [
   {
-    target: 50,
+    target: 30,
     suffix: '+',
     label: 'Años de experiencia',
-    description: 'Fabricando en Chile desde 1975',
+    description: 'Fabricando en Chile desde 1994',
   },
   {
     target: 500,
@@ -52,7 +52,7 @@ const STATS: StatData[] = [
 
 // ─── Constantes ───────────────────────────────────────────────────────────
 
-const ACCENT = '#E63000';
+const ACCENT = 'var(--accent)';
 const DURATION_MS = 1800;
 
 // ─── Easing easeOutQuart ─────────────────────────────────────────────────
@@ -133,13 +133,13 @@ function AnimatedStat({ stat, active, index }: AnimatedStatProps) {
         className="
           flex flex-col gap-2
           p-6 md:p-8
-          bg-white
           rounded-2xl
-          border border-[#E5E5E5]
-          hover:border-[rgba(230,48,0,0.3)]
-          hover:shadow-sm
           transition-all duration-300
         "
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          border: '1px solid var(--border)',
+        }}
       >
         {/* Número contador */}
         <div
@@ -174,13 +174,13 @@ function AnimatedStat({ stat, active, index }: AnimatedStatProps) {
         </div>
 
         {/* Label */}
-        <p className="text-sm md:text-base font-bold text-[#1A1A1A] leading-snug">
+        <p className="text-sm md:text-base font-bold leading-snug" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-dm-sans)' }}>
           {stat.label}
         </p>
 
         {/* Descripción */}
         {stat.description && (
-          <p className="text-xs text-[#666666] leading-relaxed">
+          <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-dm-sans)' }}>
             {stat.description}
           </p>
         )}
@@ -236,9 +236,10 @@ export default function Stats() {
           <Reveal delay={0.1}>
             <h2
               id="stats-heading"
-              className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-[#1A1A1A] leading-[1.15]"
+              className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15]"
+              style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-playfair)' }}
             >
-              50 años avalan cada pedido
+              30 años avalan cada pedido
             </h2>
           </Reveal>
         </div>

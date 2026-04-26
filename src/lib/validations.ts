@@ -3,12 +3,11 @@ import { z } from 'zod'
 // ─── Opciones de producto ─────────────────────────────────────────────────
 
 export const PRODUCTOS = [
-  'Limpiapiés Personalizado con Logo',
-  'Alfombra Publicitaria',
-  'Antideslizante',
-  'Alfombra Descarga Electrostática',
-  'Cinta de Seguridad',
-  'Alfombra en Rollo',
+  'Alfombra Publicitaria con Logo',
+  'Alfombra Publicitaria sin Logo',
+  'Tipo Nómada',
+  'Tipo Cristal',
+  'Stick Matt',
   'No estoy seguro — necesito asesoría',
 ] as const
 
@@ -16,7 +15,7 @@ export const PRODUCTOS = [
 
 export const contactSchema = z.object({
   nombre: z.string().min(2, 'Ingresá tu nombre'),
-  empresa: z.string().min(2, 'Ingresá el nombre de tu empresa'),
+  empresa: z.string().optional(),
   email: z.string().email('Ese email no parece correcto'),
   telefono: z.string().optional(),
   producto: z.string().min(1, 'Elegí un producto'),

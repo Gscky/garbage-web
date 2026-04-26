@@ -1,0 +1,94 @@
+{
+  "proyecto": {
+    "nombre": "Garbage — Limpiapiés Personalizados",
+    "tipo": "landing",
+    "objetivo_principal": "Captar leads B2B — que empresas soliciten cotización de limpiapiés personalizados con su logo",
+    "audiencia": {
+      "perfil": "Jefes de compras, gerentes de operaciones o marketing de empresas medianas y grandes en Chile. Retail, bancos, municipalidades, supermercados, edificios corporativos.",
+      "dolor_principal": "Necesitan limpiapiés con su marca/logo para sus instalaciones y no saben dónde conseguirlos con buena calidad y personalización real.",
+      "deseo_principal": "Un proveedor confiable que entregue a todo Chile, con experiencia comprobada y proceso simple para cotizar.",
+      "objecion_principal": "¿Son confiables? ¿Cumplen tiempos de entrega? ¿Pueden manejar mi volumen?"
+    },
+    "propuesta_valor_unica": "Más de 30 años fabricando limpiapiés personalizados para las marcas más grandes de Chile — Líder, Unimarc, Paris, bancos y municipalidades confían en nosotros.",
+    "tono": "profesional",
+    "datos_contacto": {
+      "telefono": ["+56 2 2683 6012", "+56 2 2684 1460"],
+      "celular": ["+56 99699 8344", "+56 99444 4244"],
+      "email": "ventas@garbage.cl",
+      "direccion": "La Raza #1695, Santiago, Chile",
+      "cobertura": "Atendemos a todas las regiones de Chile"
+    }
+  },
+  "secciones": [
+    "hero",
+    "clientes_destacados",
+    "productos",
+    "por_que_elegirnos",
+    "proceso",
+    "contacto_cotizacion"
+  ],
+  "contenido_clave": {
+    "anos_experiencia": "30+",
+    "clientes_referencia": ["Líder", "Unimarc", "Paris", "Bancos", "Municipalidades"],
+    "productos": [
+      "Limpiapiés personalizados con logo",
+      "Alfombras publicitarias",
+      "Antideslizantes",
+      "Alfombras descarga electrostática",
+      "Cintas de seguridad y señalización",
+      "Alfombra en rollo (metros)"
+    ],
+    "diferenciadores": [
+      "30+ años de experiencia",
+      "100% personalizable con tu logo",
+      "Atendemos todo Chile",
+      "Clientes líderes del retail y banca",
+      "Cotización directa y sin vueltas"
+    ]
+  },
+  "stack": {
+    "framework": "Next.js 14 App Router",
+    "estilos": "Tailwind CSS",
+    "animaciones": "Framer Motion",
+    "componentes": "shadcn/ui customizado",
+    "cms": "none",
+    "auth": "none",
+    "email": "Resend",
+    "deploy": "Vercel"
+  },
+  "identidad_visual": {
+    "estilo": "blanco y limpio — profesional, industrial pero moderno. Que transmita solidez y experiencia.",
+    "paleta_sugerida": {
+      "fondo": "#FFFFFF",
+      "fondo_secundario": "#F5F5F5",
+      "acento": "#E63000",
+      "acento_hover": "#C42800",
+      "texto": "#1A1A1A",
+      "texto_secundario": "#666666"
+    },
+    "tipografia": {
+      "display": "Inter (700-900)",
+      "body": "Inter (400-500)"
+    },
+    "referentes": [
+      "Sitio web limpio tipo empresa industrial premium",
+      "Énfasis en logos de clientes conocidos para credibilidad",
+      "CTA de cotización muy visible"
+    ],
+    "lo_que_NO_queremos": [
+      "Diseño anticuado como el sitio actual",
+      "Demasiado texto — que sea escaneable",
+      "Diseño tipo tienda online — no es ecommerce",
+      "Exceso de colores — paleta controlada",
+      "Stock photos genéricas — usar fotos reales del producto si hay"
+    ]
+  },
+  "seo": {
+    "keywords_principales": ["limpiapiés personalizados", "alfombras con logo", "limpiapiés publicitarios Chile", "alfombras corporativas"],
+    "ubicacion": "Santiago, Chile — cobertura nacional"
+  },
+  "fechas": {
+    "inicio": "2026-04-02",
+    "deadline": "ASAP"
+  }
+}

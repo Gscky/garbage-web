@@ -2,7 +2,7 @@
  * Design System — Garbage Limpiapiés Personalizados
  * Agente 01A — Design System Engineer
  *
- * Empresa industrial con 50+ años de trayectoria.
+ * Empresa industrial con 30+ años de trayectoria.
  * Modo: CLARO. Paleta blanca/limpia + acento rojo fuerte.
  * Sin dark mode. Sin gradientes azul-morado. Sin estética de startup.
  */

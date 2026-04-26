@@ -1,5 +1,5 @@
 // src/components/icons/IconExperiencia.tsx
-// Trofeo / medalla que representa 50+ años de experiencia
+// Trofeo / medalla que representa 30+ años de experiencia
 
 export function IconExperiencia({ className }: { className?: string }) {
   return (

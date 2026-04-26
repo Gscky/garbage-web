@@ -47,9 +47,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             'text-sm text-[#1A1A1A]',
             'border transition-colors duration-150',
             'placeholder:text-[#9CA3AF]',
-            'focus:outline-none focus:ring-2 focus:ring-[#E63000] focus:ring-offset-0',
-            !hasError && 'border-[#E5E5E5] focus:border-[#E63000]',
-            hasError && 'border-[#E63000] focus:border-[#E63000]',
+            'focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-0',
+            !hasError && 'border-[#E5E5E5] focus:border-[#0EA5E9]',
+            hasError && 'border-[#0EA5E9] focus:border-[#0EA5E9]',
             'resize-vertical',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             className
@@ -57,7 +57,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
         {hasError && (
-          <p id={`${textareaId}-error`} className="text-xs text-[#E63000]" role="alert">
+          <p id={`${textareaId}-error`} className="text-xs text-[#0EA5E9]" role="alert">
             {error}
           </p>
         )}

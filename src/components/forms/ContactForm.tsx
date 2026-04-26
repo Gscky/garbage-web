@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, forwardRef } from 'react'
 import { useForm } from 'react-hook-form'
+import { useColor, COLORES_GARBAGE } from '@/context/ColorContext'
+import { useTab } from '@/context/TabContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion, AnimatePresence } from 'framer-motion'
 import { contactSchema, type ContactFormData, PRODUCTOS } from '@/lib/validations'
@@ -66,7 +68,7 @@ interface SelectFieldProps {
   name?: string
 }
 
-function SelectField({
+const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(function SelectField({
   label,
   id,
   error,
@@ -75,7 +77,7 @@ function SelectField({
   onChange,
   onBlur,
   name,
-}: SelectFieldProps) {
+}, ref) {
   const hasError = Boolean(error)
 
   return (
@@ -86,6 +88,7 @@ function SelectField({
       <select
         id={id}
         name={name}
+        ref={ref}
         value={value}
         onChange={onChange}
         onBlur={onBlur}
@@ -96,11 +99,11 @@ function SelectField({
           'w-full h-11 px-3',
           'rounded-md',
           'bg-white',
-          'text-sm text-[#1A1A1A]',
+          'text-sm text-[#0A1628]',
           'border transition-colors duration-150',
-          'focus:outline-none focus:ring-2 focus:ring-[#E63000] focus:ring-offset-0',
-          !hasError && 'border-[#E5E5E5] focus:border-[#E63000]',
-          hasError && 'border-[#E63000] focus:border-[#E63000]',
+          'focus:outline-none focus:ring-2 focus:ring-[#0A1628]/20 focus:ring-offset-0',
+          !hasError && 'border-[#E5E5E5] focus:border-[#0A1628]',
+          hasError && 'border-red-400 focus:border-red-400',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           'appearance-none',
           'bg-[url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20fill%3D%27none%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20stroke%3D%27%236b7280%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20stroke-width%3D%271.5%27%20d%3D%27M6%208l4%204%204-4%27%2F%3E%3C%2Fsvg%3E")]',
@@ -118,19 +121,22 @@ function SelectField({
         ))}
       </select>
       {hasError && (
-        <p id={`${id}-error`} className="text-xs text-[#E63000]" role="alert">
+        <p id={`${id}-error`} className="text-xs text-red-500" role="alert">
           {error}
         </p>
       )}
     </div>
   )
-}
+})
 
 // ─── Componente principal ─────────────────────────────────────────────────
 
 export function ContactForm() {
   const [status, setStatus] = useState<FormStatus>('idle')
   const [serverError, setServerError] = useState<string>('')
+  const [colorOpen, setColorOpen] = useState(false)
+  const { selectedColor, setSelectedColor } = useColor()
+  const { prefill, setPrefill } = useTab()
 
   const {
     register,
@@ -140,9 +146,9 @@ export function ContactForm() {
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      nombre: '',
+      nombre: prefill.nombre || '',
       empresa: '',
-      email: '',
+      email: prefill.email || '',
       telefono: '',
       producto: '',
       mensaje: '',
@@ -159,23 +165,27 @@ export function ContactForm() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          color: selectedColor?.nombre ?? 'No especificado',
+        }),
       })
 
       const json = (await res.json()) as { success: boolean; message: string }
 
       if (!res.ok || !json.success) {
         setServerError(
-          json.message ?? 'Algo falló al enviar. Intentá de nuevo o llamanos al +56 2 2683 6012.'
+          json.message ?? 'Algo falló al enviar. Intenta de nuevo o llámanos al +56 2 2683 6012.'
         )
         setStatus('error')
         return
       }
 
       setStatus('success')
+      setPrefill({ nombre: '', email: '' })
       reset()
     } catch {
-      setServerError('Algo falló al enviar. Intentá de nuevo o llamanos al +56 2 2683 6012.')
+      setServerError('Algo falló al enviar. Intenta de nuevo o llámanos al +56 2 2683 6012.')
       setStatus('error')
     }
   }
@@ -210,7 +220,7 @@ export function ContactForm() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7 }}
           onClick={() => setStatus('idle')}
-          className="mt-6 text-sm text-[#E63000] underline underline-offset-2 hover:text-[#C42800] transition-colors"
+          className="mt-6 text-sm text-[#0A1628] underline underline-offset-2 hover:text-[#1a2d4a] transition-colors"
         >
           Enviar otra consulta
         </motion.button>
@@ -226,23 +236,14 @@ export function ContactForm() {
       className="rounded-2xl border border-[#E5E5E5] bg-white p-6 shadow-sm md:p-8"
     >
       <div className="space-y-5">
-        {/* Fila: nombre + empresa */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <Input
-            label="Nombre *"
-            placeholder="Juan Pérez"
-            error={errors.nombre?.message}
-            disabled={isLoading}
-            {...register('nombre')}
-          />
-          <Input
-            label="Empresa *"
-            placeholder="Empresa S.A."
-            error={errors.empresa?.message}
-            disabled={isLoading}
-            {...register('empresa')}
-          />
-        </div>
+        {/* Nombre */}
+        <Input
+          label="Nombre *"
+          placeholder="Juan Pérez"
+          error={errors.nombre?.message}
+          disabled={isLoading}
+          {...register('nombre')}
+        />
 
         {/* Fila: email + teléfono */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -273,10 +274,132 @@ export function ContactForm() {
           {...register('producto')}
         />
 
+        {/* Color del limpiapiés — selector desplegable */}
+        <div style={{ marginBottom: '0' }}>
+          <label style={{
+            display: 'block',
+            fontSize: '0.82rem',
+            fontWeight: 500,
+            color: '#0A1628',
+            marginBottom: '0.5rem',
+            fontFamily: 'var(--font-dm-sans)',
+          }}>
+            Color del limpiapiés
+          </label>
+
+          {/* Trigger */}
+          <div
+            onClick={() => setColorOpen(!colorOpen)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0.75rem 1rem',
+              background: '#FFFFFF',
+              border: selectedColor
+                ? '1px solid #0A1628'
+                : '1px solid rgba(10,22,40,0.2)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              transition: 'border-color 0.2s',
+              fontFamily: 'var(--font-dm-sans)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              {selectedColor ? (
+                <>
+                  <div style={{
+                    width: '18px', height: '18px',
+                    borderRadius: '50%',
+                    background: selectedColor.hex,
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    flexShrink: 0,
+                  }} />
+                  <span style={{ fontSize: '0.85rem', color: '#0A1628' }}>
+                    {selectedColor.nombre}
+                  </span>
+                </>
+              ) : (
+                <span style={{ fontSize: '0.85rem', color: 'rgba(10,22,40,0.4)' }}>
+                  Selecciona un color
+                </span>
+              )}
+            </div>
+            <span style={{
+              fontSize: '0.7rem',
+              color: 'rgba(10,22,40,0.4)',
+              transform: colorOpen ? 'rotate(180deg)' : 'rotate(0)',
+              transition: 'transform 0.2s',
+              display: 'inline-block',
+            }}>▼</span>
+          </div>
+
+          {/* Panel desplegable */}
+          {colorOpen && (
+            <div style={{
+              marginTop: '8px',
+              padding: '1rem',
+              background: '#FFFFFF',
+              border: '1px solid rgba(10,22,40,0.1)',
+              borderRadius: '8px',
+              boxShadow: '0 8px 24px rgba(10,22,40,0.1)',
+            }}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(6, 1fr)',
+                gap: '8px',
+                marginBottom: '0.8rem',
+              }}>
+                {COLORES_GARBAGE.map((color) => (
+                  <div
+                    key={color.nombre}
+                    onClick={() => {
+                      setSelectedColor(color)
+                      setColorOpen(false)
+                    }}
+                    title={color.nombre}
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      background: color.hex,
+                      border: selectedColor?.nombre === color.nombre
+                        ? '2px solid #0A1628'
+                        : '2px solid transparent',
+                      outline: selectedColor?.nombre === color.nombre
+                        ? '2px solid rgba(10,22,40,0.2)'
+                        : 'none',
+                      outlineOffset: '2px',
+                      cursor: 'pointer',
+                      transition: 'transform 0.15s',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.15)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
+                  />
+                ))}
+              </div>
+              <p style={{
+                fontSize: '0.65rem',
+                color: 'rgba(10,22,40,0.35)',
+                margin: 0,
+                fontFamily: 'var(--font-dm-sans)',
+              }}>
+                Colores únicos de fábrica · Sin variedad Pantone
+              </p>
+            </div>
+          )}
+        </div>
+        <input
+          type="hidden"
+          name="color"
+          value={selectedColor?.nombre ?? 'No especificado'}
+        />
+
         {/* Mensaje */}
         <Textarea
           label="Contanos sobre tu proyecto *"
-          placeholder="Cantidad aproximada, uso previsto, si tenés logo o diseño, plazos, etc."
+          placeholder="Cantidad aproximada, uso previsto, si tienes logo o diseño, plazos, etc."
           error={errors.mensaje?.message}
           disabled={isLoading}
           rows={4}
@@ -293,7 +416,7 @@ export function ContactForm() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="rounded-md border border-[#E63000]/30 bg-[#E63000]/5 px-4 py-3 text-sm text-[#E63000]">
+              <div className="rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {serverError}
               </div>
             </motion.div>

@@ -3,7 +3,7 @@
  * Agente 01A — Design System Engineer
  *
  * Extiende el tema base con todos los tokens del design system.
- * Modo: CLARO (sin darkMode activo). Empresa industrial 50+ años.
+ * Modo: CLARO (sin darkMode activo). Empresa industrial 30+ años.
  */
 
 import type { Config } from 'tailwindcss';

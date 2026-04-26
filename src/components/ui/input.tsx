@@ -58,9 +58,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               'text-sm text-[#1A1A1A]',
               'border transition-colors duration-150',
               'placeholder-transparent',
-              'focus:outline-none focus:ring-2 focus:ring-[#E63000] focus:ring-offset-0',
-              !hasError && 'border-[#E5E5E5] focus:border-[#E63000]',
-              hasError && 'border-[#E63000] focus:border-[#E63000]',
+              'focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-0',
+              !hasError && 'border-[#E5E5E5] focus:border-[#0EA5E9]',
+              hasError && 'border-[#0EA5E9] focus:border-[#0EA5E9]',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               className
             )}
@@ -74,16 +74,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               'text-sm text-[#9CA3AF]',
               'transition-all duration-150 pointer-events-none',
               // Estado flotante
-              'peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-[#E63000]',
+              'peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-[#0EA5E9]',
               'peer-not-placeholder-shown:top-1.5 peer-not-placeholder-shown:text-xs',
-              hasError && 'peer-focus:text-[#E63000]'
+              hasError && 'peer-focus:text-[#0EA5E9]'
             )}
           >
             {label}
           </label>
           {/* Mensajes */}
           {hasError && (
-            <p id={`${inputId}-error`} className="mt-1.5 text-xs text-[#E63000]" role="alert">
+            <p id={`${inputId}-error`} className="mt-1.5 text-xs text-[#0EA5E9]" role="alert">
               {error}
             </p>
           )}
@@ -126,16 +126,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             'text-sm text-[#1A1A1A]',
             'border transition-colors duration-150',
             'placeholder:text-[#9CA3AF]',
-            'focus:outline-none focus:ring-2 focus:ring-[#E63000] focus:ring-offset-0',
-            !hasError && 'border-[#E5E5E5] focus:border-[#E63000]',
-            hasError && 'border-[#E63000] focus:border-[#E63000]',
+            'focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-0',
+            !hasError && 'border-[#E5E5E5] focus:border-[#0EA5E9]',
+            hasError && 'border-[#0EA5E9] focus:border-[#0EA5E9]',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             className
           )}
           {...props}
         />
         {hasError && (
-          <p id={`${inputId}-error`} className="text-xs text-[#E63000]" role="alert">
+          <p id={`${inputId}-error`} className="text-xs text-[#0EA5E9]" role="alert">
             {error}
           </p>
         )}
