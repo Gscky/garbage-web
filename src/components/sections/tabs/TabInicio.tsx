@@ -25,6 +25,24 @@ const CARRUSEL_IMAGES = [
   '/images/gallery/IMG_5034.JPG',
 ]
 
+const CARRUSEL_ALTS = [
+  'Limpiapiés con logo personalizado para supermercado en Santiago Chile',
+  'Alfombra corporativa con logo troquelado para entrada de local comercial',
+  'Limpiapiés PVC rizado con logo empresa retail Chile',
+  'Alfombra publicitaria personalizada con logotipo para banco',
+  'Limpiapiés tipo nomad con isotipo empresa para acceso de oficinas',
+  'Alfombra de alto tráfico con logo para municipalidad Chile',
+  'Limpiapiés personalizado con logo para cadena de tiendas retail',
+  'Alfombra antideslizante con logo corporativo entrada empresa',
+  'Limpiapiés PVC con logo a color para local comercial Santiago',
+  'Alfombra entrada personalizada con logo marca reconocida Chile',
+  'Limpiapiés con logo y slogan empresa para acceso principal oficina',
+  'Alfombra corporativa medida especial con logo troquelado vinilo',
+  'Limpiapiés personalizados en lote para cadena de sucursales Chile',
+  'Alfombra PVC rizado con logo empresa fabricación propia Santiago',
+  'Limpiapiés con logo empresa para zona de alto tráfico retail',
+]
+
 // ── Beneficios (solo texto + ícono) ──────────────────────────────────────────
 const BENEFICIOS = [
   {
@@ -76,9 +94,10 @@ const STATS: StatDef[] = [
 ]
 
 function useCounter(target: number, active: boolean, duration = 1200) {
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(target) // valor real para SSR — Google indexa "30+", no "0+"
   useEffect(() => {
     if (!active || target === 0) return
+    setValue(0) // reset para iniciar animación desde 0
     let startTs: number | null = null
     const step = (ts: number) => {
       if (!startTs) startTs = ts
@@ -186,7 +205,7 @@ export default function TabInicio() {
         >
           Algunos de nuestros trabajos
         </p>
-        <ImageAutoSlider images={CARRUSEL_IMAGES} height={180} />
+        <ImageAutoSlider images={CARRUSEL_IMAGES} alts={CARRUSEL_ALTS} height={180} />
       </section>
 
       {/* ── 4. Por qué funciona ─────────────────────────────────────────── */}
@@ -215,7 +234,7 @@ export default function TabInicio() {
             color: '#0A1628',
             marginBottom: '2.5rem',
           }}>
-            El limpiapiés correcto hace la diferencia
+            Beneficios de los Limpiapiés de PVC con Logo
           </h2>
           <div style={{
             display: 'grid',

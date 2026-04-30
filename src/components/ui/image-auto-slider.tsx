@@ -4,10 +4,11 @@ import { useEffect, useRef } from 'react';
 
 interface ImageAutoSliderProps {
   images: string[];
+  alts?: string[];
   height?: number;
 }
 
-export function ImageAutoSlider({ images, height = 180 }: ImageAutoSliderProps) {
+export function ImageAutoSlider({ images, alts, height = 180 }: ImageAutoSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -131,7 +132,7 @@ export function ImageAutoSlider({ images, height = 180 }: ImageAutoSliderProps) 
           >
             <img
               src={src}
-              alt=""
+              alt={alts?.[i % images.length] ?? ''}
               draggable={false}
               loading="lazy"
               decoding="async"

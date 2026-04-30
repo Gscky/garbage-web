@@ -107,7 +107,7 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* Headline */}
+        {/* Headline — keyword principal para SEO */}
         <motion.h1
           custom={1}
           variants={fadeUpVariants}
@@ -116,21 +116,39 @@ export default function Hero() {
           style={{
             fontFamily: 'var(--font-playfair)',
             fontWeight: 900,
-            fontSize: 'clamp(2.8rem, 6vw, 5rem)',
-            lineHeight: 1.08,
+            fontSize: 'clamp(2.2rem, 5vw, 4rem)',
+            lineHeight: 1.1,
             letterSpacing: '-0.02em',
             color: '#FFFFFF',
+            marginBottom: '0.75rem',
+          }}
+        >
+          Limpiapiés Personalizados
+          <br />
+          con Logo para Empresas
+        </motion.h1>
+
+        {/* Eslogan — ahora como subtítulo visual */}
+        <motion.p
+          custom={2}
+          variants={fadeUpVariants}
+          initial="hidden"
+          animate="visible"
+          style={{
+            fontFamily: 'var(--font-playfair)',
+            fontWeight: 400,
+            fontStyle: 'italic',
+            fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            color: 'rgba(255,255,255,0.55)',
             marginBottom: '1.5rem',
           }}
         >
-          La primera impresión
-          <br />
-          está a tus pies.
-        </motion.h1>
+          La primera impresión está a tus pies.
+        </motion.p>
 
         {/* Subheadline */}
         <motion.p
-          custom={2}
+          custom={3}
           variants={fadeUpVariants}
           initial="hidden"
           animate="visible"
@@ -153,7 +171,7 @@ export default function Hero() {
 
         {/* CTAs */}
         <motion.div
-          custom={3}
+          custom={4}
           variants={fadeUpVariants}
           initial="hidden"
           animate="visible"
@@ -211,7 +229,7 @@ export default function Hero() {
 
         {/* Trust badges */}
         <motion.div
-          custom={4}
+          custom={5}
           variants={fadeUpVariants}
           initial="hidden"
           animate="visible"

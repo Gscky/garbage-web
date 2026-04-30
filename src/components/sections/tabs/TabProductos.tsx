@@ -25,8 +25,8 @@ const PRODUCTOS: Producto[] = [
     ],
     titulo: 'Limpiapiés Tipo Nomad',
     subtitulo: 'Con logo · Sin logo · Con slogan',
-    descripcion: 'Alfombra modular de filamento continuo de vinilo. Disponible personalizada con el logo de tu empresa, con slogan o en color sólido. Alta durabilidad para retail, bancos, municipalidades y oficinas.',
-    detalles: ['Con logo o slogan', '22 colores disponibles', 'Medidas personalizadas', 'Entrega a todo Chile'],
+    descripcion: 'Alfombra de filamento continuo de PVC rizado de alta densidad. Disponible personalizada con el logo de tu empresa por troquelado y fundido de filamentos (no pintado), con slogan o en color sólido. Soporta alto tráfico, lavable con agua a presión y disponible en 22 colores únicos de fábrica.',
+    detalles: ['PVC rizado alta densidad', 'Logo por troquelado', '22 colores únicos', 'Medidas personalizadas', 'Alto tráfico', 'Entrega a todo Chile'],
   },
   {
     imagenes: [
@@ -274,6 +274,81 @@ export default function TabProductos() {
           </div>
         </div>
       </div>
+
+      {/* Especificaciones técnicas — contenido semántico para SEO */}
+      <section
+        aria-label="Especificaciones técnicas limpiapiés personalizados"
+        style={{
+          backgroundColor: '#0A1628',
+          padding: 'clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 5vw, 5rem)',
+        }}
+      >
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <p style={{
+            fontFamily: 'var(--font-dm-sans)', fontWeight: 700,
+            fontSize: '0.72rem', textTransform: 'uppercase',
+            letterSpacing: '0.2em', color: '#C8A96E', marginBottom: '0.75rem',
+          }}>
+            Especificaciones técnicas
+          </p>
+          <h2 style={{
+            fontFamily: 'var(--font-playfair)', fontWeight: 700,
+            fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: '#FFFFFF',
+            marginBottom: '2rem',
+          }}>
+            Limpiapiés de PVC Tipo Nomad — Ficha técnica
+          </h2>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
+            gap: '1px',
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '8px',
+            overflow: 'hidden',
+          }}>
+            {[
+              { label: 'Material', value: 'PVC rizado de alta densidad' },
+              { label: 'Espesor', value: '10–14 mm' },
+              { label: 'Tráfico', value: 'Medio y alto tráfico' },
+              { label: 'Personalización', value: 'Troquelado y fundido de filamentos de vinilo (no pintado)' },
+              { label: 'Colores', value: '22 colores únicos de fábrica' },
+              { label: 'Medidas', value: 'A medida — cualquier dimensión' },
+              { label: 'Mantenimiento', value: 'Lavable con agua a presión' },
+              { label: 'Cobertura', value: 'Despacho a todo Chile' },
+            ].map(({ label, value }) => (
+              <div key={label} style={{
+                backgroundColor: 'rgba(255,255,255,0.03)',
+                padding: '1.25rem 1.5rem',
+              }}>
+                <p style={{
+                  fontFamily: 'var(--font-dm-sans)', fontWeight: 700,
+                  fontSize: '0.65rem', textTransform: 'uppercase',
+                  letterSpacing: '0.12em', color: '#C8A96E', marginBottom: '0.4rem',
+                }}>
+                  {label}
+                </p>
+                <p style={{
+                  fontFamily: 'var(--font-dm-sans)', fontWeight: 400,
+                  fontSize: '0.875rem', color: 'rgba(255,255,255,0.75)',
+                  lineHeight: 1.5,
+                }}>
+                  {value}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{
+            fontFamily: 'var(--font-dm-sans)', fontWeight: 300,
+            fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)',
+            marginTop: '1rem',
+          }}>
+            Los colores son únicos de fábrica y no tienen variedad de Pantone. Los logos no son pintados: se trabajan por troquelado y fundido de filamentos continuos de vinilo, lo que garantiza mayor durabilidad y definición del diseño.
+          </p>
+        </div>
+      </section>
 
       <TabCTA titulo="Tu logo en el piso de tu empresa" />
     </div>
