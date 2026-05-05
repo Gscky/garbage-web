@@ -70,7 +70,7 @@ export default function TabFAQ() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <SectionBanner eyebrow="Preguntas frecuentes" titulo="Todo lo que necesitás saber" />
+      <SectionBanner eyebrow="Preguntas frecuentes" titulo="Preguntas Frecuentes sobre Limpiapiés Personalizados" />
 
       <div style={{ backgroundColor: '#F8F7F4', padding: 'clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 5vw, 5rem)', minHeight: '40vh' }}>
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
