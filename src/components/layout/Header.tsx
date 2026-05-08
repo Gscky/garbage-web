@@ -60,7 +60,7 @@ export default function Header() {
           >
             <img
               src="/images/logo.jpeg"
-              alt="Garbage"
+              alt="Garbage Limpiapiés Personalizados Chile"
               loading="eager"
               style={{ height: '40px', width: 'auto', display: 'block' }}
             />
