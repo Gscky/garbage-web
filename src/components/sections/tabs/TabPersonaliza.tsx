@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { TabCTA } from '@/components/ui/tab-cta'
 import { useColor, COLORES_GARBAGE } from '@/context/ColorContext'
 import { useTab } from '@/context/TabContext'
@@ -14,6 +14,15 @@ export default function TabPersonaliza() {
   const [nombre, setNombre] = useState('')
   const [email, setEmail]   = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const logoInputRef = useRef<HTMLInputElement>(null)
+
+  const handleLogoFile = (file: File) => {
+    if (!file.type.startsWith('image/')) return
+    const url = URL.createObjectURL(file)
+    setLogoUrl(prev => { if (prev) URL.revokeObjectURL(prev); return url })
+  }
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
@@ -43,107 +52,175 @@ export default function TabPersonaliza() {
           alignItems: 'start',
         }}>
 
-          {/* Vista previa — rectángulo CSS puro */}
+          {/* Vista previa con textura real */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{
-              width: '100%',
-              maxWidth: '400px',
-              aspectRatio: '4/3',
-              borderRadius: '10px',
-              background: matColor,
-              transition: 'background 0.5s ease',
-              transform: 'perspective(700px) rotateX(18deg) rotateY(-4deg)',
-              boxShadow: '0 40px 80px rgba(10,22,40,0.15), 0 0 0 1px rgba(10,22,40,0.04)',
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              overflow: 'hidden',
-            }}>
-              {/* Textura dots */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1.2px, transparent 1.2px)',
-                backgroundSize: '8px 8px',
-              }} />
-              {/* Zona logo */}
-              <div style={{
-                border: '2px dashed rgba(255,255,255,0.45)',
-                borderRadius: '6px',
-                padding: '0.8rem 2rem',
-                textAlign: 'center',
+
+            {/* Input oculto */}
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/svg+xml,image/webp"
+              style={{ display: 'none' }}
+              onChange={(e) => { if (e.target.files?.[0]) handleLogoFile(e.target.files[0]) }}
+            />
+
+            {/* Alfombra 3D con textura */}
+            <div
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault()
+                setIsDragging(false)
+                const file = e.dataTransfer.files[0]
+                if (file) handleLogoFile(file)
+              }}
+              style={{
+                width: '100%',
+                maxWidth: '420px',
+                aspectRatio: '4/3',
+                borderRadius: '10px',
+                transform: 'perspective(700px) rotateX(18deg) rotateY(-4deg)',
+                boxShadow: '0 40px 80px rgba(10,22,40,0.18), 0 0 0 1px rgba(10,22,40,0.06)',
                 position: 'relative',
-                zIndex: 1,
+                overflow: 'hidden',
+                cursor: logoUrl ? 'default' : 'pointer',
+                transition: 'box-shadow 0.3s ease',
+                backgroundColor: matColor,
+                // Textura de ribbing horizontal (simula goma de limpiapiés)
+                backgroundImage: [
+                  'repeating-linear-gradient(0deg, rgba(255,255,255,0.09) 0px, rgba(255,255,255,0.09) 2px, transparent 2px, transparent 7px)',
+                  'repeating-linear-gradient(0deg, rgba(0,0,0,0.13) 5px, rgba(0,0,0,0.13) 7px, transparent 7px, transparent 12px)',
+                  'repeating-linear-gradient(90deg, rgba(0,0,0,0.025) 0px, rgba(0,0,0,0.025) 1px, transparent 1px, transparent 14px)',
+                ].join(', '),
+              }}
+              onClick={() => { if (!logoUrl) logoInputRef.current?.click() }}
+            >
+              {/* Overlay de drag */}
+              {isDragging && (
+                <div style={{
+                  position: 'absolute', inset: 0, zIndex: 10,
+                  background: 'rgba(255,255,255,0.25)',
+                  border: '3px dashed rgba(255,255,255,0.8)',
+                  borderRadius: '10px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <span style={{ color: '#fff', fontFamily: 'var(--font-dm-sans)', fontWeight: 600, fontSize: '0.9rem' }}>
+                    Soltar logo aquí
+                  </span>
+                </div>
+              )}
+
+              {/* Logo o placeholder */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <div style={{
-                  fontFamily: 'var(--font-playfair)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  color: 'rgba(255,255,255,0.75)',
-                  letterSpacing: '0.2em',
-                }}>
-                  LOGO
-                </div>
-                <div style={{
-                  fontSize: '0.62rem',
-                  color: 'rgba(255,255,255,0.4)',
-                  marginTop: '0.2rem',
-                  fontFamily: 'var(--font-dm-sans)',
-                }}>
-                  Tu diseño aquí
-                </div>
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt="Logo preview"
+                    style={{
+                      maxWidth: '52%',
+                      maxHeight: '52%',
+                      objectFit: 'contain',
+                      filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.35))',
+                      pointerEvents: 'none',
+                    }}
+                  />
+                ) : (
+                  <div style={{
+                    border: '2px dashed rgba(255,255,255,0.5)',
+                    borderRadius: '8px',
+                    padding: '0.9rem 2rem',
+                    textAlign: 'center',
+                    transition: 'border-color 0.2s',
+                  }}>
+                    <div style={{
+                      fontFamily: 'var(--font-dm-sans)',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      color: 'rgba(255,255,255,0.8)',
+                      marginBottom: '0.2rem',
+                    }}>
+                      + Subir tu logo
+                    </div>
+                    <div style={{
+                      fontSize: '0.62rem',
+                      color: 'rgba(255,255,255,0.45)',
+                      fontFamily: 'var(--font-dm-sans)',
+                    }}>
+                      PNG, JPG o SVG · Arrastra o haz click
+                    </div>
+                  </div>
+                )}
               </div>
+
               {/* Sombra inferior */}
               <div style={{
                 position: 'absolute',
-                bottom: '-16px',
-                left: '15%',
-                width: '70%',
-                height: '16px',
-                background: matColor,
-                filter: 'blur(16px)',
-                opacity: 0.5,
-                borderRadius: '50%',
+                bottom: '-16px', left: '15%', width: '70%', height: '16px',
+                background: matColor, filter: 'blur(16px)', opacity: 0.5, borderRadius: '50%',
               }} />
             </div>
 
-            {/* Badge color activo */}
-            <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+            {/* Controles debajo de la alfombra */}
+            <div style={{ marginTop: '1.25rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+              {logoUrl ? (
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button
+                    onClick={() => logoInputRef.current?.click()}
+                    style={{
+                      fontFamily: 'var(--font-dm-sans)', fontSize: '0.78rem', fontWeight: 500,
+                      color: '#0A1628', background: '#fff', border: '1px solid rgba(10,22,40,0.2)',
+                      borderRadius: '4px', padding: '0.4rem 0.9rem', cursor: 'pointer',
+                    }}
+                  >
+                    Cambiar logo
+                  </button>
+                  <button
+                    onClick={() => { setLogoUrl(null) }}
+                    style={{
+                      fontFamily: 'var(--font-dm-sans)', fontSize: '0.78rem', fontWeight: 500,
+                      color: '#E63000', background: '#fff', border: '1px solid rgba(230,48,0,0.2)',
+                      borderRadius: '4px', padding: '0.4rem 0.9rem', cursor: 'pointer',
+                    }}
+                  >
+                    Quitar
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => logoInputRef.current?.click()}
+                  style={{
+                    fontFamily: 'var(--font-dm-sans)', fontSize: '0.8rem', fontWeight: 600,
+                    color: '#0A1628', background: '#fff', border: '1px solid rgba(10,22,40,0.2)',
+                    borderRadius: '4px', padding: '0.5rem 1.2rem', cursor: 'pointer',
+                    boxShadow: '0 1px 4px rgba(10,22,40,0.06)',
+                  }}
+                >
+                  Subir tu logo →
+                </button>
+              )}
+
+              {/* Badge color activo */}
               {selectedColor ? (
                 <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.6rem',
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '6px',
-                  border: '1px solid rgba(10,22,40,0.12)',
+                  display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
+                  padding: '0.45rem 0.9rem', backgroundColor: '#FFFFFF',
+                  borderRadius: '6px', border: '1px solid rgba(10,22,40,0.12)',
                   boxShadow: '0 2px 8px rgba(10,22,40,0.06)',
                 }}>
                   <div style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '3px',
-                    backgroundColor: selectedColor.hex,
-                    flexShrink: 0,
+                    width: '12px', height: '12px', borderRadius: '3px',
+                    backgroundColor: selectedColor.hex, flexShrink: 0,
                     border: '1px solid rgba(10,22,40,0.1)',
                   }} />
-                  <span style={{
-                    fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '0.8rem',
-                    color: '#0A1628',
-                    fontWeight: 500,
-                  }}>
+                  <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.8rem', color: '#0A1628', fontWeight: 500 }}>
                     {selectedColor.nombre}
                   </span>
                 </div>
               ) : (
-                <p style={{
-                  fontFamily: 'var(--font-dm-sans)',
-                  fontSize: '0.8rem',
-                  color: 'rgba(10,22,40,0.35)',
-                }}>
+                <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.8rem', color: 'rgba(10,22,40,0.35)' }}>
                   Selecciona un color →
                 </p>
               )}
