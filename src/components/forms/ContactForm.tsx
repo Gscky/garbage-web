@@ -145,6 +145,7 @@ export function ContactForm() {
     reset,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
+    mode: 'onBlur',
     defaultValues: {
       nombre: prefill.nombre || '',
       empresa: '',
@@ -284,7 +285,7 @@ export function ContactForm() {
             marginBottom: '0.5rem',
             fontFamily: 'var(--font-dm-sans)',
           }}>
-            Color del limpiapiés
+            Color del limpiapiés (opcional)
           </label>
 
           {/* Trigger */}

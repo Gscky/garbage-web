@@ -1,6 +1,7 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useCallback } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 
 export type TabId =
   | 'inicio'
@@ -19,6 +20,24 @@ export const TABS: { id: TabId; label: string }[] = [
   { id: 'contacto',    label: 'Contacto' },
 ]
 
+const PATH_TO_TAB: Record<string, TabId> = {
+  '/':            'inicio',
+  '/productos':   'productos',
+  '/personaliza': 'personaliza',
+  '/cotizar':     'cotizar',
+  '/faq':         'faq',
+  '/contacto':    'contacto',
+}
+
+const TAB_TO_PATH: Record<TabId, string> = {
+  inicio:      '/',
+  productos:   '/productos',
+  personaliza: '/personaliza',
+  cotizar:     '/cotizar',
+  faq:         '/faq',
+  contacto:    '/contacto',
+}
+
 export interface FormPrefill {
   nombre: string
   email: string
@@ -34,16 +53,23 @@ interface TabContextValue {
 const TabContext = createContext<TabContextValue | null>(null)
 
 export function TabProvider({ children }: { children: React.ReactNode }) {
-  const [activeTab, setActiveTab] = useState<TabId>('inicio')
-  const [prefill, setPrefill] = useState<FormPrefill>({ nombre: '', email: '' })
+  const router = useRouter()
+  const pathname = usePathname()
+  const [prefill, setPrefillState] = useState<FormPrefill>({ nombre: '', email: '' })
 
-  const handleSetTab = (tab: TabId) => {
-    setActiveTab(tab)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  const activeTab: TabId = PATH_TO_TAB[pathname] ?? 'inicio'
+
+  const setActiveTab = useCallback((tab: TabId) => {
+    router.push(TAB_TO_PATH[tab])
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [router])
+
+  const setPrefill = useCallback((data: FormPrefill) => {
+    setPrefillState(data)
+  }, [])
 
   return (
-    <TabContext.Provider value={{ activeTab, setActiveTab: handleSetTab, prefill, setPrefill }}>
+    <TabContext.Provider value={{ activeTab, setActiveTab, prefill, setPrefill }}>
       {children}
     </TabContext.Provider>
   )
