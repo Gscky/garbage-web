@@ -124,8 +124,9 @@ export async function POST(request: NextRequest) {
 
   // Enviar email con Resend
   try {
+    const fromAddress = process.env.RESEND_FROM_EMAIL ?? 'Garbage Web <onboarding@resend.dev>'
     const { error } = await resend.emails.send({
-      from: 'Garbage Web <noreply@garbage.cl>',
+      from: fromAddress,
       to: [destinatario],
       replyTo: email,
       subject: `Nueva cotización: ${producto} — ${empresa}`,
