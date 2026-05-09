@@ -20,8 +20,9 @@ export default function TabPersonaliza() {
 
   const handleLogoFile = (file: File) => {
     if (!file.type.startsWith('image/')) return
-    const url = URL.createObjectURL(file)
-    setLogoUrl(prev => { if (prev) URL.revokeObjectURL(prev); return url })
+    const reader = new FileReader()
+    reader.onload = (e) => setLogoUrl(e.target?.result as string)
+    reader.readAsDataURL(file)
   }
 
   const inputStyle: React.CSSProperties = {
@@ -64,7 +65,7 @@ export default function TabPersonaliza() {
               onChange={(e) => { if (e.target.files?.[0]) handleLogoFile(e.target.files[0]) }}
             />
 
-            {/* Alfombra 3D con textura */}
+            {/* Alfombra 3D con foto real + colorización */}
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
               onDragLeave={() => setIsDragging(false)}
@@ -74,6 +75,7 @@ export default function TabPersonaliza() {
                 const file = e.dataTransfer.files[0]
                 if (file) handleLogoFile(file)
               }}
+              onClick={() => { if (!logoUrl) logoInputRef.current?.click() }}
               style={{
                 width: '100%',
                 maxWidth: '420px',
@@ -84,27 +86,42 @@ export default function TabPersonaliza() {
                 position: 'relative',
                 overflow: 'hidden',
                 cursor: logoUrl ? 'default' : 'pointer',
-                transition: 'box-shadow 0.3s ease',
-                backgroundColor: matColor,
-                // Textura de ribbing horizontal (simula goma de limpiapiés)
-                backgroundImage: [
-                  'repeating-linear-gradient(0deg, rgba(255,255,255,0.09) 0px, rgba(255,255,255,0.09) 2px, transparent 2px, transparent 7px)',
-                  'repeating-linear-gradient(0deg, rgba(0,0,0,0.13) 5px, rgba(0,0,0,0.13) 7px, transparent 7px, transparent 12px)',
-                  'repeating-linear-gradient(90deg, rgba(0,0,0,0.025) 0px, rgba(0,0,0,0.025) 1px, transparent 1px, transparent 14px)',
-                ].join(', '),
               }}
-              onClick={() => { if (!logoUrl) logoInputRef.current?.click() }}
             >
-              {/* Overlay de drag */}
+              {/* Foto real de alfombra — escala de grises */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/products/alfombra-con-logo.png"
+                alt=""
+                aria-hidden="true"
+                style={{
+                  position: 'absolute', inset: 0,
+                  width: '100%', height: '100%',
+                  objectFit: 'cover',
+                  filter: 'grayscale(1) brightness(1.15) contrast(1.1)',
+                  display: 'block',
+                  pointerEvents: 'none',
+                }}
+              />
+
+              {/* Capa de color — multiply sobre la textura */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                backgroundColor: matColor,
+                mixBlendMode: 'multiply',
+                transition: 'background-color 0.4s ease',
+              }} />
+
+              {/* Overlay drag */}
               {isDragging && (
                 <div style={{
                   position: 'absolute', inset: 0, zIndex: 10,
-                  background: 'rgba(255,255,255,0.25)',
-                  border: '3px dashed rgba(255,255,255,0.8)',
+                  background: 'rgba(255,255,255,0.2)',
+                  border: '3px dashed rgba(255,255,255,0.9)',
                   borderRadius: '10px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <span style={{ color: '#fff', fontFamily: 'var(--font-dm-sans)', fontWeight: 600, fontSize: '0.9rem' }}>
+                  <span style={{ color: '#fff', fontFamily: 'var(--font-dm-sans)', fontWeight: 700, fontSize: '0.9rem', textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
                     Soltar logo aquí
                   </span>
                 </div>
@@ -112,44 +129,36 @@ export default function TabPersonaliza() {
 
               {/* Logo o placeholder */}
               <div style={{
-                position: 'absolute', inset: 0,
+                position: 'absolute', inset: 0, zIndex: 2,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={logoUrl}
-                    alt="Logo preview"
+                    alt="Vista previa del logo"
                     style={{
-                      maxWidth: '52%',
-                      maxHeight: '52%',
+                      maxWidth: '50%',
+                      maxHeight: '50%',
                       objectFit: 'contain',
-                      filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.35))',
+                      filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.5))',
                       pointerEvents: 'none',
+                      display: 'block',
                     }}
                   />
                 ) : (
                   <div style={{
-                    border: '2px dashed rgba(255,255,255,0.5)',
+                    border: '2px dashed rgba(255,255,255,0.6)',
                     borderRadius: '8px',
                     padding: '0.9rem 2rem',
                     textAlign: 'center',
-                    transition: 'border-color 0.2s',
+                    backdropFilter: 'blur(2px)',
                   }}>
-                    <div style={{
-                      fontFamily: 'var(--font-dm-sans)',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      color: 'rgba(255,255,255,0.8)',
-                      marginBottom: '0.2rem',
-                    }}>
+                    <div style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.85rem', fontWeight: 700, color: '#fff', marginBottom: '0.2rem', textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
                       + Subir tu logo
                     </div>
-                    <div style={{
-                      fontSize: '0.62rem',
-                      color: 'rgba(255,255,255,0.45)',
-                      fontFamily: 'var(--font-dm-sans)',
-                    }}>
-                      PNG, JPG o SVG · Arrastra o haz click
+                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-dm-sans)', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+                      PNG con fondo transparente · Arrastra o click
                     </div>
                   </div>
                 )}
