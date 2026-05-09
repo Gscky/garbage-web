@@ -29,7 +29,7 @@ const dmSans = DM_Sans({
   display: 'swap',
 })
 
-const SITE_URL = 'https://garbage.cl'
+const SITE_URL = 'https://www.garbage.cl'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

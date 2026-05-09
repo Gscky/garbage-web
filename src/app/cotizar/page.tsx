@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Cotizar Limpiapiés Personalizados con Logo',
   description:
     'Solicitá una cotización sin compromiso. Respondemos en menos de 24 horas hábiles. Adjuntá tu logo y recibí un presupuesto detallado para tu empresa.',
-  alternates: { canonical: 'https://garbage.cl/cotizar' },
+  alternates: { canonical: 'https://www.garbage.cl/cotizar' },
 }
 
 export default function CotizarPage() {

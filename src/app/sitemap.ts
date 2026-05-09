@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 
-const SITE_URL = 'https://garbage.cl'
+const SITE_URL = 'https://www.garbage.cl'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
