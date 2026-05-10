@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, forwardRef } from 'react'
+import { useState, useRef, forwardRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useColor, COLORES_GARBAGE } from '@/context/ColorContext'
 import { useTab } from '@/context/TabContext'
@@ -135,6 +135,9 @@ export function ContactForm() {
   const [status, setStatus] = useState<FormStatus>('idle')
   const [serverError, setServerError] = useState<string>('')
   const [colorOpen, setColorOpen] = useState(false)
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [logoDragOver, setLogoDragOver] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const { selectedColor, setSelectedColor } = useColor()
   const { prefill, setPrefill } = useTab()
 
@@ -158,18 +161,32 @@ export function ContactForm() {
 
   const isLoading = status === 'loading'
 
+  function handleLogoFile(file: File) {
+    const allowed = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml', 'application/pdf']
+    if (!allowed.includes(file.type) && !file.name.match(/\.(ai|eps)$/i)) return
+    setLogoFile(file)
+  }
+
   async function onSubmit(data: ContactFormData) {
     setStatus('loading')
     setServerError('')
 
     try {
+      const fd = new FormData()
+      fd.append('nombre', data.nombre)
+      fd.append('empresa', data.empresa ?? '')
+      fd.append('email', data.email)
+      fd.append('telefono', data.telefono ?? '')
+      fd.append('producto', data.producto)
+      fd.append('mensaje', data.mensaje)
+      fd.append('color', selectedColor?.nombre ?? 'No especificado')
+      fd.append('website', data.website ?? '') // honeypot
+      if (logoFile) fd.append('logo', logoFile)
+
       const res = await fetch('/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          color: selectedColor?.nombre ?? 'No especificado',
-        }),
+        body: fd,
+        // Sin Content-Type: el browser lo pone con el boundary correcto
       })
 
       const json = (await res.json()) as { success: boolean; message: string }
@@ -185,6 +202,7 @@ export function ContactForm() {
       setStatus('success')
       setPrefill({ nombre: '', email: '' })
       reset()
+      setLogoFile(null)
     } catch {
       setServerError('Algo falló al enviar. Intenta de nuevo o llámanos al +56 2 2683 6012.')
       setStatus('error')
@@ -236,6 +254,16 @@ export function ContactForm() {
       noValidate
       className="rounded-2xl border border-[#E5E5E5] bg-white p-6 shadow-sm md:p-8"
     >
+      {/* Honeypot — oculto para humanos, visible para bots */}
+      <input
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ display: 'none' }}
+        {...register('website')}
+      />
+
       <div className="space-y-5">
         {/* Nombre */}
         <Input
@@ -391,11 +419,81 @@ export function ContactForm() {
             </div>
           )}
         </div>
-        <input
-          type="hidden"
-          name="color"
-          value={selectedColor?.nombre ?? 'No especificado'}
-        />
+
+        {/* Logo de la empresa */}
+        <div>
+          <label style={{
+            display: 'block',
+            fontSize: '0.82rem',
+            fontWeight: 500,
+            color: '#0A1628',
+            marginBottom: '0.5rem',
+            fontFamily: 'var(--font-dm-sans)',
+          }}>
+            Logo de tu empresa (opcional)
+          </label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/svg+xml,application/pdf,.ai,.eps"
+            style={{ display: 'none' }}
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) handleLogoFile(file)
+            }}
+          />
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(e) => { e.preventDefault(); setLogoDragOver(true) }}
+            onDragLeave={() => setLogoDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault()
+              setLogoDragOver(false)
+              const file = e.dataTransfer.files?.[0]
+              if (file) handleLogoFile(file)
+            }}
+            style={{
+              border: `2px dashed ${logoDragOver ? '#0A1628' : logoFile ? '#22c55e' : 'rgba(10,22,40,0.2)'}`,
+              borderRadius: '8px',
+              padding: '1rem',
+              textAlign: 'center',
+              cursor: 'pointer',
+              transition: 'border-color 0.2s, background 0.2s',
+              background: logoDragOver ? 'rgba(10,22,40,0.03)' : logoFile ? 'rgba(34,197,94,0.04)' : 'transparent',
+            }}
+          >
+            {logoFile ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" style={{ width: '18px', height: '18px', flexShrink: 0 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span style={{ fontSize: '0.82rem', color: '#374151', fontFamily: 'var(--font-dm-sans)' }}>
+                  {logoFile.name}
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setLogoFile(null); if (fileInputRef.current) fileInputRef.current.value = '' }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(10,22,40,0.4)', fontSize: '0.75rem', padding: '0 4px' }}
+                  aria-label="Quitar logo"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(10,22,40,0.3)" strokeWidth="1.5" style={{ width: '28px', height: '28px', margin: '0 auto 0.4rem' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+                <p style={{ fontSize: '0.78rem', color: 'rgba(10,22,40,0.5)', margin: 0, fontFamily: 'var(--font-dm-sans)' }}>
+                  Arrastrá o hacé click para subir
+                </p>
+                <p style={{ fontSize: '0.68rem', color: 'rgba(10,22,40,0.35)', margin: '0.2rem 0 0', fontFamily: 'var(--font-dm-sans)' }}>
+                  PNG, JPG, SVG, PDF, AI, EPS
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Mensaje */}
         <Textarea

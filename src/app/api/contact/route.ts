@@ -1,66 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
 import { contactSchema } from '@/lib/validations'
 
-// ─── Rate limiting (en memoria — simple, sin Redis) ───────────────────────
+// ─── Upstash rate limiting (persistente entre deploys) ────────────────────
 
-interface RateLimitEntry {
-  count: number
-  resetAt: number
-}
-
-const rateLimitMap = new Map<string, RateLimitEntry>()
-
-const RATE_LIMIT_MAX = 5           // requests máximos por ventana
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000  // 1 hora en ms
-
-function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
-  const now = Date.now()
-  const entry = rateLimitMap.get(ip)
-
-  if (!entry || now >= entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW })
-    return { allowed: true, remaining: RATE_LIMIT_MAX - 1 }
-  }
-
-  if (entry.count >= RATE_LIMIT_MAX) {
-    return { allowed: false, remaining: 0 }
-  }
-
-  entry.count += 1
-  return { allowed: true, remaining: RATE_LIMIT_MAX - entry.count }
-}
-
-// ─── Limpiar entradas vencidas periodicamente ─────────────────────────────
-
-function purgeExpiredEntries() {
-  const now = Date.now()
-  for (const [key, entry] of Array.from(rateLimitMap.entries())) {
-    if (now >= entry.resetAt) {
-      rateLimitMap.delete(key)
-    }
-  }
-}
-
-// ─── Resend client ────────────────────────────────────────────────────────
-
-
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(5, '1 h'),
+  analytics: true,
+  prefix: 'garbage_contact',
+})
 
 // ─── Handler POST ─────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
-  // Verificar RESEND_API_KEY
   if (!process.env.RESEND_API_KEY) {
-    console.error("[contact/route] RESEND_API_KEY no esta configurado.")
+    console.error('[contact/route] RESEND_API_KEY no esta configurado.')
     return NextResponse.json(
-      { success: false, message: "Error de configuracion." },
+      { success: false, message: 'Error de configuracion.' },
       { status: 500 }
     )
   }
   const resend = new Resend(process.env.RESEND_API_KEY)
-
-  // Purgar entradas vencidas cada request (bajo overhead)
-  purgeExpiredEntries()
 
   // Obtener IP del request
   const ip =
@@ -69,7 +32,7 @@ export async function POST(request: NextRequest) {
     'unknown'
 
   // Verificar rate limit
-  const { allowed, remaining } = checkRateLimit(ip)
+  const { success: allowed, remaining } = await ratelimit.limit(ip)
 
   if (!allowed) {
     return NextResponse.json(
@@ -80,17 +43,17 @@ export async function POST(request: NextRequest) {
       {
         status: 429,
         headers: {
-          'X-RateLimit-Limit': String(RATE_LIMIT_MAX),
+          'X-RateLimit-Limit': '5',
           'X-RateLimit-Remaining': '0',
         },
       }
     )
   }
 
-  // Parsear body
-  let body: unknown
+  // Parsear FormData
+  let formData: FormData
   try {
-    body = await request.json()
+    formData = await request.formData()
   } catch {
     return NextResponse.json(
       { success: false, message: 'El cuerpo del request no es válido.' },
@@ -98,8 +61,27 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // Extraer campos de texto
+  const rawBody = {
+    nombre: formData.get('nombre'),
+    empresa: formData.get('empresa') || undefined,
+    email: formData.get('email'),
+    telefono: formData.get('telefono') || undefined,
+    producto: formData.get('producto'),
+    mensaje: formData.get('mensaje'),
+    website: formData.get('website') || undefined,
+  }
+
+  // Honeypot — devolver falso éxito sin procesar
+  if (rawBody.website) {
+    return NextResponse.json(
+      { success: true, message: '¡Mensaje enviado! Te respondemos en menos de 24 horas.' },
+      { status: 200 }
+    )
+  }
+
   // Validación server-side con Zod
-  const parsed = contactSchema.safeParse(body)
+  const parsed = contactSchema.safeParse(rawBody)
 
   if (!parsed.success) {
     const firstError = parsed.error.issues[0]?.message ?? 'Datos inválidos.'
@@ -110,7 +92,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { nombre, empresa, email, telefono, producto, mensaje } = parsed.data
-  const color = (body as Record<string, unknown>)['color'] as string | undefined
+  const color = String(formData.get('color') ?? 'No especificado')
 
   // Verificar variable de entorno
   const destinatario = process.env.CONTACT_EMAIL
@@ -122,6 +104,15 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // Preparar adjunto de logo si viene
+  type ResendAttachment = { filename: string; content: Buffer }
+  const attachments: ResendAttachment[] = []
+  const logoFile = formData.get('logo')
+  if (logoFile instanceof File && logoFile.size > 0) {
+    const buffer = Buffer.from(await logoFile.arrayBuffer())
+    attachments.push({ filename: logoFile.name, content: buffer })
+  }
+
   // Enviar email con Resend
   try {
     const fromAddress = process.env.RESEND_FROM_EMAIL ?? 'Garbage Web <onboarding@resend.dev>'
@@ -129,7 +120,8 @@ export async function POST(request: NextRequest) {
       from: fromAddress,
       to: [destinatario],
       replyTo: email,
-      subject: `Nueva cotización: ${producto} — ${empresa}`,
+      subject: `Nueva cotización: ${producto} — ${empresa || nombre}`,
+      attachments,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1A1A1A;">
           <div style="background: #E63000; padding: 24px 32px;">
@@ -159,13 +151,17 @@ export async function POST(request: NextRequest) {
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Producto</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${producto}</td>
               </tr>
-              ${color ? `<tr>
+              <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Color</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${color}</td>
-              </tr>` : ''}
+              </tr>
               ${empresa ? `<tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Empresa</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${empresa}</td>
+              </tr>` : ''}
+              ${attachments.length > 0 ? `<tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Logo</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">Adjunto: ${attachments[0].filename}</td>
               </tr>` : ''}
             </table>
             <div style="margin-top: 24px;">
@@ -193,7 +189,7 @@ export async function POST(request: NextRequest) {
       {
         status: 200,
         headers: {
-          'X-RateLimit-Limit': String(RATE_LIMIT_MAX),
+          'X-RateLimit-Limit': '5',
           'X-RateLimit-Remaining': String(remaining),
         },
       }
