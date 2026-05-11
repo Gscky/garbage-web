@@ -65,7 +65,7 @@ export default function TabPersonaliza() {
               onChange={(e) => { if (e.target.files?.[0]) handleLogoFile(e.target.files[0]) }}
             />
 
-            {/* Alfombra 3D con foto real + colorización */}
+            {/* Alfombra con foto real + colorización */}
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
               onDragLeave={() => setIsDragging(false)}
@@ -81,14 +81,14 @@ export default function TabPersonaliza() {
                 maxWidth: '420px',
                 aspectRatio: '4/3',
                 borderRadius: '10px',
-                transform: 'perspective(700px) rotateX(18deg) rotateY(-4deg)',
-                boxShadow: '0 40px 80px rgba(10,22,40,0.18), 0 0 0 1px rgba(10,22,40,0.06)',
+                transform: 'perspective(900px) rotateX(10deg) rotateY(-1deg)',
+                boxShadow: '0 28px 60px rgba(10,22,40,0.18), 0 0 0 1px rgba(10,22,40,0.06)',
                 position: 'relative',
                 overflow: 'hidden',
                 cursor: logoUrl ? 'default' : 'pointer',
               }}
             >
-              {/* Foto real de alfombra — escala de grises */}
+              {/* Foto real de alfombra — muy iluminada para borrar texto/watermark */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/products/alfombra-con-logo.png"
@@ -98,7 +98,7 @@ export default function TabPersonaliza() {
                   position: 'absolute', inset: 0,
                   width: '100%', height: '100%',
                   objectFit: 'cover',
-                  filter: 'grayscale(1) brightness(1.15) contrast(1.1)',
+                  filter: 'grayscale(1) brightness(2.2) contrast(0.45)',
                   display: 'block',
                   pointerEvents: 'none',
                 }}
@@ -167,8 +167,8 @@ export default function TabPersonaliza() {
               {/* Sombra inferior */}
               <div style={{
                 position: 'absolute',
-                bottom: '-16px', left: '15%', width: '70%', height: '16px',
-                background: matColor, filter: 'blur(16px)', opacity: 0.5, borderRadius: '50%',
+                bottom: '-12px', left: '20%', width: '60%', height: '12px',
+                background: matColor, filter: 'blur(12px)', opacity: 0.4, borderRadius: '50%',
               }} />
             </div>
 
