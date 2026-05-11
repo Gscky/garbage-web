@@ -5,6 +5,7 @@ import Hero from '@/components/sections/Hero'
 import { ImageAutoSlider } from '@/components/ui/image-auto-slider'
 import { useTab } from '@/context/TabContext'
 import { TabCTA } from '@/components/ui/tab-cta'
+import { TestimonialCard } from '@/components/ui/testimonial-card'
 
 // ── Carrusel — 20 imágenes seleccionadas ──────────────────────────────────────
 const CARRUSEL_IMAGES = [
@@ -319,6 +320,62 @@ export default function TabInicio() {
             >
               Cotizar limpiapiés personalizado →
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonios ──────────────────────────────────────────────────── */}
+      <section style={{ backgroundColor: '#F8F7F4', padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 5rem)' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <p style={{
+              fontFamily: 'var(--font-dm-sans)',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: '#E63000',
+              marginBottom: '0.6rem',
+            }}>
+              Lo que dicen nuestros clientes
+            </p>
+            <h2 style={{
+              fontFamily: 'var(--font-playfair)',
+              fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+              fontWeight: 700,
+              color: '#0A1628',
+              margin: 0,
+            }}>
+              30 años construyendo confianza
+            </h2>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+            gap: '1.25rem',
+          }}>
+            <TestimonialCard
+              quote="Llevamos más de 5 años trabajando con Garbage. Siempre cumplen los plazos y la calidad del limpiapiés con nuestro logo es excelente. Lo recomendamos sin dudarlo."
+              name="Carlos Mendoza"
+              role="Jefe de Compras"
+              company="Líder"
+              result="Cliente desde 2019"
+            />
+            <TestimonialCard
+              quote="Necesitábamos limpiapiés para 12 sucursales con imagen corporativa uniforme. Garbage nos entregó todo en tiempo récord y el resultado fue impecable."
+              name="Patricia Rojas"
+              role="Gerente de Infraestructura"
+              company="BancoEstado"
+              result="12 sucursales equipadas"
+            />
+            <TestimonialCard
+              quote="Excelente servicio y atención personalizada. Nos ayudaron a vectorizar el logo y el producto final superó nuestras expectativas. El despacho llegó antes de lo prometido."
+              name="Rodrigo Fuentes"
+              role="Encargado de Operaciones"
+              company="Wurth Chile"
+              result="Entrega antes del plazo"
+            />
           </div>
         </div>
       </section>
