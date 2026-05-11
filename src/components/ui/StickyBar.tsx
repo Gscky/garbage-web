@@ -54,26 +54,28 @@ export default function StickyBar() {
             onClick={handleCTA}
             className="flex items-center gap-2 w-full md:w-auto justify-center md:justify-start"
             style={{
-              backgroundColor: '#E63000',
-              color: '#FFFFFF',
+              backgroundColor: '#FFFFFF',
+              color: '#0A1628',
               fontFamily: 'var(--font-dm-sans)',
               fontWeight: 600,
-              fontSize: '0.82rem',
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-              borderRadius: '2px',
-              padding: '0.5rem 1.25rem',
+              fontSize: '0.83rem',
+              letterSpacing: '0.02em',
+              borderRadius: '8px',
+              padding: '0.5rem 1.4rem',
               border: 'none',
               cursor: 'pointer',
-              transition: 'background-color 0.15s, transform 0.15s',
+              transition: 'background-color 0.15s, box-shadow 0.15s, transform 0.15s',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.25)',
               whiteSpace: 'nowrap',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#cc2a00'
+              e.currentTarget.style.backgroundColor = '#F0EEE9'
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)'
               e.currentTarget.style.transform = 'translateY(-1px)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#E63000'
+              e.currentTarget.style.backgroundColor = '#FFFFFF'
+              e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.25)'
               e.currentTarget.style.transform = 'translateY(0)'
             }}
           >
