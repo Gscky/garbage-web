@@ -1,89 +1,7 @@
 'use client'
 
-import { useState, useRef } from 'react'
 import { ContactForm } from '@/components/forms/ContactForm'
 import { SectionBanner } from '@/components/ui/section-banner'
-
-function DragDropLogo() {
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [fileName, setFileName] = useState<string | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
-
-  const handleFile = (file: File) => setFileName(file.name)
-
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-    const file = e.dataTransfer.files[0]
-    if (file) handleFile(file)
-  }
-
-  return (
-    <div>
-      <p style={{
-        fontFamily: 'var(--font-dm-sans)',
-        fontWeight: 500,
-        fontSize: '0.875rem',
-        color: '#0A1628',
-        marginBottom: '0.5rem',
-      }}>
-        Adjuntar logo (opcional)
-      </p>
-      <label
-        onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={onDrop}
-        style={{
-          display: 'block',
-          border: `2px dashed ${isDragging ? '#0A1628' : 'rgba(10,22,40,0.2)'}`,
-          borderRadius: '8px',
-          padding: '2rem',
-          textAlign: 'center',
-          cursor: 'pointer',
-          backgroundColor: fileName ? 'rgba(10,22,40,0.03)' : '#F8F7F4',
-          transition: 'border-color 0.2s ease, background-color 0.2s ease',
-        }}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          accept=".png,.jpg,.jpeg,.pdf,.ai,.svg,.eps"
-          style={{ display: 'none' }}
-          onChange={(e) => { if (e.target.files?.[0]) handleFile(e.target.files[0]) }}
-        />
-        {fileName ? (
-          <p style={{
-            fontFamily: 'var(--font-dm-sans)',
-            fontSize: '0.875rem',
-            color: '#0A1628',
-            fontWeight: 500,
-          }}>
-            <span style={{ color: '#22c55e', marginRight: '0.4rem' }}>✓</span> {fileName}
-          </p>
-        ) : (
-          <>
-            <p style={{
-              fontFamily: 'var(--font-dm-sans)',
-              fontSize: '0.875rem',
-              color: '#0A1628',
-              fontWeight: 500,
-              marginBottom: '0.25rem',
-            }}>
-              Arrastra tu logo aquí o haz click para subir
-            </p>
-            <p style={{
-              fontFamily: 'var(--font-dm-sans)',
-              fontSize: '0.72rem',
-              color: 'rgba(10,22,40,0.4)',
-            }}>
-              PNG, PDF o AI con fondo transparente
-            </p>
-          </>
-        )}
-      </label>
-    </div>
-  )
-}
 
 function InfoContacto() {
   return (
@@ -202,11 +120,7 @@ export default function TabCotizar() {
             borderRadius: '8px',
             padding: '2rem',
             boxShadow: '0 2px 12px rgba(10,22,40,0.06)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.25rem',
           }}>
-            <DragDropLogo />
             <ContactForm />
           </div>
 
