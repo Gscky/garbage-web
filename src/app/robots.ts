@@ -1,9 +1,8 @@
 import { MetadataRoute } from 'next'
 
-// Bloquea indexación en staging (.vercel.app).
-// Cuando garbage.cl apunte a Vercel, agregar NEXT_PUBLIC_SITE_URL=https://www.garbage.cl
-// en las env vars de Vercel para habilitar el crawl en producción.
-const isProduction = process.env.NEXT_PUBLIC_SITE_URL === 'https://www.garbage.cl'
+// VERCEL_ENV es automático: 'production' | 'preview' | 'development'
+// No necesita configuración manual en Vercel.
+const isProduction = process.env.VERCEL_ENV === 'production'
 
 export default function robots(): MetadataRoute.Robots {
   if (!isProduction) {
