@@ -38,12 +38,15 @@ export default function StickyBar() {
             padding: '0.55rem clamp(1rem, 4vw, 2.5rem)',
           }}
         >
-          {/* Texto — solo desktop */}
+          {/* Texto mobile (corto) */}
+          <p className="flex md:hidden items-center gap-2 min-w-0" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.8)', margin: 0, overflow: 'hidden' }}>
+            <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#E63000', flexShrink: 0 }} />
+            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Limpiapiés con tu logo</span>
+          </p>
+
+          {/* Texto desktop (completo) */}
           <p className="hidden md:flex items-center gap-2" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', margin: 0 }}>
-            <span style={{
-              display: 'inline-block', width: '6px', height: '6px',
-              borderRadius: '50%', backgroundColor: '#E63000', flexShrink: 0,
-            }} />
+            <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#E63000', flexShrink: 0 }} />
             Limpiapiés personalizados con tu logo
             <span style={{ color: 'rgba(255,255,255,0.35)' }}>—</span>
             <span style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>Fabricación propia · 30 años de experiencia</span>
@@ -52,7 +55,7 @@ export default function StickyBar() {
           {/* Botón CTA */}
           <button
             onClick={handleCTA}
-            className="flex items-center gap-2 w-full md:w-auto justify-center md:justify-start"
+            className="flex items-center gap-2 flex-shrink-0 md:w-auto justify-center md:justify-start"
             style={{
               backgroundColor: '#FFFFFF',
               color: '#0A1628',
