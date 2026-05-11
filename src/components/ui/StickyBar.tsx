@@ -26,34 +26,60 @@ export default function StickyBar() {
       {visible && (
         <motion.div
           key="sticky-bar"
-          initial={{ y: -80, opacity: 0 }}
+          initial={{ y: -60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -80, opacity: 0 }}
-          transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 py-2.5 md:px-6 md:py-3"
+          exit={{ y: -60, opacity: 0 }}
+          transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between"
           style={{
-            backgroundColor: 'rgba(10,10,10,0.95)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 2px 16px rgba(0,0,0,0.4)',
+            backgroundColor: '#0A1628',
+            borderBottom: '1px solid rgba(255,255,255,0.07)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.35)',
+            padding: '0.55rem clamp(1rem, 4vw, 2.5rem)',
           }}
         >
-          <p className="hidden md:block text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-dm-sans)' }}>
-            Limpiapiés personalizados con tu logo —{' '}
-            <span style={{ color: '#E63000', fontWeight: 600 }}>respuesta en menos de 24h</span>
+          {/* Texto — solo desktop */}
+          <p className="hidden md:flex items-center gap-2" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', margin: 0 }}>
+            <span style={{
+              display: 'inline-block', width: '6px', height: '6px',
+              borderRadius: '50%', backgroundColor: '#E63000', flexShrink: 0,
+            }} />
+            Limpiapiés personalizados con tu logo
+            <span style={{ color: 'rgba(255,255,255,0.35)' }}>—</span>
+            <span style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>Fabricación propia · 30 años de experiencia</span>
           </p>
 
+          {/* Botón CTA */}
           <button
             onClick={handleCTA}
-            className="flex items-center gap-2 text-sm font-semibold transition-all duration-200 hover:scale-105 w-full md:w-auto justify-center md:justify-start"
-            style={{ backgroundColor: '#FFFFFF', color: '#0A1628', borderRadius: '2px', padding: '0.5rem 1.2rem' }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#F0EEE9' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF' }}
+            className="flex items-center gap-2 w-full md:w-auto justify-center md:justify-start"
+            style={{
+              backgroundColor: '#E63000',
+              color: '#FFFFFF',
+              fontFamily: 'var(--font-dm-sans)',
+              fontWeight: 600,
+              fontSize: '0.82rem',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+              borderRadius: '2px',
+              padding: '0.5rem 1.25rem',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 0.15s, transform 0.15s',
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#cc2a00'
+              e.currentTarget.style.transform = 'translateY(-1px)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#E63000'
+              e.currentTarget.style.transform = 'translateY(0)'
+            }}
           >
             Cotizar ahora
-            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
-              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <svg viewBox="0 0 16 16" fill="none" style={{ width: '13px', height: '13px' }}>
+              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </motion.div>
