@@ -976,8 +976,6 @@ export default function ConfiguradorClient() {
           .config-grid { grid-template-columns: 1fr !important; }
           .form-grid   { grid-template-columns: 1fr !important; }
           .resumen-sidebar { order: -1; }
-          /* Preview antes que controles en mobile */
-          .config-preview { order: -1; }
         }
         /* En mobile (<768px) el header solo tiene la fila del logo (64px),
            la fila de tabs está oculta (hidden md:block). */

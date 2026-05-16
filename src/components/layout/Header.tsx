@@ -150,9 +150,9 @@ export default function Header() {
                     borderLeft: 'none',
                     borderRight: 'none',
                     borderBottom: isActive
-                      ? '2px solid #0A1628'
+                      ? '2px solid #C8A96E'
                       : '2px solid transparent',
-                    color: isActive ? '#0A1628' : 'rgba(10,22,40,0.4)',
+                    color: isActive ? '#C8A96E' : 'rgba(10,22,40,0.4)',
                     cursor: 'pointer',
                     transition: 'color 0.15s, border-bottom-color 0.15s',
                     whiteSpace: 'nowrap',
@@ -202,7 +202,7 @@ export default function Header() {
                   fontSize: '1rem',
                   textTransform: 'uppercase',
                   letterSpacing: '0.12em',
-                  color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.5)',
+                  color: isActive ? '#C8A96E' : 'rgba(255,255,255,0.5)',
                   background: 'none',
                   border: 'none',
                   borderBottom: '1px solid rgba(255,255,255,0.07)',
@@ -213,7 +213,7 @@ export default function Header() {
                 }}
               >
                 {isActive && (
-                  <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FFFFFF', marginRight: '0.75rem', verticalAlign: 'middle' }} />
+                  <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#C8A96E', marginRight: '0.75rem', verticalAlign: 'middle' }} />
                 )}
                 {tab.label}
               </button>
