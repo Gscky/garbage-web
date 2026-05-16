@@ -16,8 +16,8 @@ export default function StickyBar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Ocultar cuando el usuario ya está en el tab de cotizar
-  if (activeTab === 'cotizar') return null
+  // Ocultar en cotizar y personaliza (ambas páginas tienen CTAs/formularios propios)
+  if (activeTab === 'cotizar' || activeTab === 'personaliza') return null
 
   const handleCTA = () => setActiveTab('cotizar')
 

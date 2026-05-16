@@ -283,6 +283,8 @@ export default function ConfiguradorClient() {
   }
 
   // ── generarPNG ────────────────────────────────────────────────
+  // Los SVG filters (feTurbulence, etc.) no se resuelven al dibujar SVG en canvas.
+  // Se eliminan del clon para que el export sea fiel al preview visual sin fallar.
   const generarPNG = (): Promise<Blob> =>
     new Promise((resolve, reject) => {
       const svg = svgRef.current
@@ -291,6 +293,10 @@ export default function ConfiguradorClient() {
       clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
       clone.style.transform = 'none'
       clone.style.filter = 'none'
+
+      // Eliminar atributos filter="url(...)" — no se resuelven en canvas
+      clone.querySelectorAll('[filter]').forEach((el) => el.removeAttribute('filter'))
+
       const svgString = new XMLSerializer().serializeToString(clone)
       const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
       const url = URL.createObjectURL(blob)
@@ -401,7 +407,7 @@ export default function ConfiguradorClient() {
 
   // ── Render ────────────────────────────────────────────────────
   return (
-    <div style={{ backgroundColor: CREMA, fontFamily: 'var(--font-dm-sans), DM Sans, sans-serif' }}>
+    <div className="configurador-root" style={{ backgroundColor: CREMA, fontFamily: 'var(--font-dm-sans), DM Sans, sans-serif', paddingTop: 'var(--navbar-height, 108px)' }}>
 
       {/* Breadcrumb */}
       <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e8e5e0', padding: '12px 0' }}>
@@ -630,7 +636,7 @@ export default function ConfiguradorClient() {
             </div>
 
             {/* Preview SVG */}
-            <div style={{
+            <div className="config-preview" style={{
               backgroundColor: 'white', borderRadius: 16,
               boxShadow: '0 1px 3px rgba(0,0,0,0.05)', border: '1px solid #e8e5e0',
               padding: 32, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -970,6 +976,13 @@ export default function ConfiguradorClient() {
           .config-grid { grid-template-columns: 1fr !important; }
           .form-grid   { grid-template-columns: 1fr !important; }
           .resumen-sidebar { order: -1; }
+          /* Preview antes que controles en mobile */
+          .config-preview { order: -1; }
+        }
+        /* En mobile (<768px) el header solo tiene la fila del logo (64px),
+           la fila de tabs está oculta (hidden md:block). */
+        @media (max-width: 767px) {
+          .configurador-root { padding-top: 64px !important; }
         }
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
