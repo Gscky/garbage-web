@@ -16,9 +16,7 @@ const schema = z.object({
   email:     z.string().email('Email inválido'),
   telefono:  z.string().max(30).optional(),
   empresa:   z.string().max(100).optional(),
-  largo:     z.string().min(1, 'Largo requerido'),
-  ancho:     z.string().min(1, 'Ancho requerido'),
-  cantidad:  z.string().max(100).optional(),
+  medidas:   z.string().max(200).optional(),
   mensaje:   z.string().max(2000).optional(),
   colorBase: z.string().max(50).optional(),
   logoTipo:  z.string().max(100).optional(),
@@ -56,9 +54,7 @@ export async function POST(request: NextRequest) {
     email:      formData.get('email'),
     telefono:   formData.get('telefono') || undefined,
     empresa:    formData.get('empresa') || undefined,
-    largo:      formData.get('largo'),
-    ancho:      formData.get('ancho'),
-    cantidad:   formData.get('cantidad') || undefined,
+    medidas:    formData.get('medidas') || undefined,
     mensaje:    formData.get('mensaje') || undefined,
     colorBase:  formData.get('colorBase') || undefined,
     logoTipo:   formData.get('logoTipo') || undefined,
@@ -79,7 +75,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const { nombre, email, telefono, empresa, largo, ancho, cantidad, mensaje, colorBase, logoTipo, tamanoLogo } = parsed.data
+  const { nombre, email, telefono, empresa, medidas, mensaje, colorBase, logoTipo, tamanoLogo } = parsed.data
 
   const destinatario = process.env.CONTACT_EMAIL
   if (!destinatario) {
@@ -125,8 +121,7 @@ export async function POST(request: NextRequest) {
             <tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Email</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;"><a href="mailto:${email}" style="color: #0A1628;">${email}</a></td></tr>
             ${telefono ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Teléfono</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${telefono}</td></tr>` : ''}
             ${empresa ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Empresa</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${empresa}</td></tr>` : ''}
-            <tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Medidas</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${largo} × ${ancho} cm</td></tr>
-            ${cantidad ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Cantidad</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${cantidad}</td></tr>` : ''}
+            ${medidas ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Medidas</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${medidas}</td></tr>` : ''}
             <tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Color base</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${colorBase ?? '—'}</td></tr>
             <tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Logo</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${logoTipo ?? '—'} ${tamanoLogo ? `· ${tamanoLogo}%` : ''}</td></tr>
             ${attachments.length > 0 ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-weight: 600;">Adjuntos</td><td style="padding: 10px 0; border-bottom: 1px solid #F0F0F0;">${attachments.map(a => a.filename).join(', ')}</td></tr>` : ''}
