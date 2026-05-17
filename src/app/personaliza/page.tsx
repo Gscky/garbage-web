@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
-import TabPersonaliza from '@/components/sections/tabs/TabPersonaliza'
+import ConfiguradorClient from './ConfiguradorClient'
 
 export const metadata: Metadata = {
-  title: 'Personaliza tu Limpiapiés — Configurador de Colores',
+  title: 'Personaliza tu Limpiapiés — Configurador en Vivo',
   description:
-    'Diseña tu limpiapiés personalizado: elige entre 22 colores únicos de fábrica y visualiza el resultado antes de cotizar. Envío a todo Chile.',
+    'Sube tu logo, elige entre 22 colores de PVC y visualiza tu limpiapiés personalizado en tiempo real. Cotiza en un click. Envío a todo Chile.',
   alternates: { canonical: 'https://www.garbage.cl/personaliza' },
 }
 
 export default function PersonalizaPage() {
-  return <TabPersonaliza />
+  return <ConfiguradorClient />
 }

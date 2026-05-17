@@ -20,6 +20,7 @@ export const contactSchema = z.object({
   telefono: z.string().optional(),
   producto: z.string().min(1, 'Elegí un producto'),
   mensaje: z.string().min(10, 'Contanos un poco sobre tu proyecto'),
+  website: z.string().max(0).optional(), // honeypot — bots lo llenan, humanos no
 })
 
 export type ContactFormData = z.infer<typeof contactSchema>

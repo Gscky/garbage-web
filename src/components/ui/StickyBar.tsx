@@ -16,8 +16,8 @@ export default function StickyBar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Ocultar cuando el usuario ya está en el tab de cotizar
-  if (activeTab === 'cotizar') return null
+  // Ocultar en cotizar y personaliza (ambas páginas tienen CTAs/formularios propios)
+  if (activeTab === 'cotizar' || activeTab === 'personaliza') return null
 
   const handleCTA = () => setActiveTab('cotizar')
 
@@ -26,34 +26,65 @@ export default function StickyBar() {
       {visible && (
         <motion.div
           key="sticky-bar"
-          initial={{ y: -80, opacity: 0 }}
+          initial={{ y: -60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -80, opacity: 0 }}
-          transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 py-2.5 md:px-6 md:py-3"
+          exit={{ y: -60, opacity: 0 }}
+          transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between"
           style={{
-            backgroundColor: 'rgba(10,10,10,0.95)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 2px 16px rgba(0,0,0,0.4)',
+            backgroundColor: '#0A1628',
+            borderBottom: '1px solid rgba(255,255,255,0.07)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.35)',
+            padding: '0.55rem clamp(1rem, 4vw, 2.5rem)',
           }}
         >
-          <p className="hidden md:block text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'var(--font-dm-sans)' }}>
-            Limpiapiés personalizados con tu logo —{' '}
-            <span style={{ color: 'var(--accent)', fontWeight: 500 }}>respuesta en menos de 24h</span>
+          {/* Texto mobile (corto) */}
+          <p className="flex md:hidden items-center gap-2 min-w-0" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.8)', margin: 0, overflow: 'hidden' }}>
+            <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#E63000', flexShrink: 0 }} />
+            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Limpiapiés con tu logo</span>
           </p>
 
+          {/* Texto desktop (completo) */}
+          <p className="hidden md:flex items-center gap-2" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', margin: 0 }}>
+            <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#E63000', flexShrink: 0 }} />
+            Limpiapiés personalizados con tu logo
+            <span style={{ color: 'rgba(255,255,255,0.35)' }}>—</span>
+            <span style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>Fabricación propia · 30 años de experiencia</span>
+          </p>
+
+          {/* Botón CTA */}
           <button
             onClick={handleCTA}
-            className="flex items-center gap-2 text-sm font-semibold transition-all duration-200 hover:scale-105 w-full md:w-auto justify-center md:justify-start"
-            style={{ backgroundColor: 'var(--accent)', color: '#000000', borderRadius: '2px', padding: '0.5rem 1.2rem' }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--accent-hover)' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--accent)' }}
+            className="flex items-center gap-2 flex-shrink-0 md:w-auto justify-center md:justify-start"
+            style={{
+              backgroundColor: '#FFFFFF',
+              color: '#0A1628',
+              fontFamily: 'var(--font-dm-sans)',
+              fontWeight: 600,
+              fontSize: '0.83rem',
+              letterSpacing: '0.02em',
+              borderRadius: '8px',
+              padding: '0.5rem 1.4rem',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 0.15s, box-shadow 0.15s, transform 0.15s',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.25)',
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#F0EEE9'
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)'
+              e.currentTarget.style.transform = 'translateY(-1px)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#FFFFFF'
+              e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.25)'
+              e.currentTarget.style.transform = 'translateY(0)'
+            }}
           >
             Cotizar ahora
-            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
-              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <svg viewBox="0 0 16 16" fill="none" style={{ width: '13px', height: '13px' }}>
+              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </motion.div>
