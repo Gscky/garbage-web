@@ -1,14 +1,8 @@
 'use client'
 
+import Image from 'next/image'
 import { useTab, TABS } from '@/context/TabContext'
-
-const CONTACTO = {
-  telefonos: ['+56 2 2683 6012', '+56 2 2684 1460'],
-  whatsapp:  ['+56 9 9699 8344', '+56 9 9444 4244'],
-  email:     'ventas@garbage.cl',
-  direccion: 'La Raza #1695, Santiago',
-  horario:   'Lun–Vie 09:00–18:00',
-}
+import { CONTACTO } from '@/lib/contact'
 
 export default function Footer() {
   const { setActiveTab } = useTab()
@@ -33,10 +27,11 @@ export default function Footer() {
         >
           {/* Col 1 — Logo + descripción */}
           <div>
-            <img
+            <Image
               src="/images/logo.jpeg"
               alt="Garbage"
-              loading="eager"
+              width={120}
+              height={34}
               style={{ height: '34px', width: 'auto', marginBottom: '1rem', filter: 'brightness(0) invert(1)', opacity: 0.9 }}
             />
             <p style={{

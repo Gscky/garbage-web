@@ -2,14 +2,15 @@
 
 import { SectionBanner } from '@/components/ui/section-banner'
 import { useTab } from '@/context/TabContext'
+import { CONTACTO } from '@/lib/contact'
 
 const DATOS_CONTACTO = [
-  { label: 'Teléfonos', value: '+56 2 2683 6012\n+56 2 2684 1460' },
-  { label: 'WhatsApp', value: '+56 9 9699 8344\n+56 9 9444 4244' },
-  { label: 'Email', value: 'ventas@garbage.cl' },
-  { label: 'Dirección', value: 'La Raza #1695, Santiago, Chile' },
+  { label: 'Teléfonos', value: CONTACTO.telefonos.join('\n') },
+  { label: 'WhatsApp',  value: CONTACTO.whatsapp.join('\n') },
+  { label: 'Email',     value: CONTACTO.email },
+  { label: 'Dirección', value: CONTACTO.direccion },
   { label: 'Cobertura', value: 'Atendemos a todas las regiones de Chile' },
-  { label: 'Horario', value: 'Lunes a Viernes · 09:00–18:00 hrs' },
+  { label: 'Horario',   value: 'Lunes a Viernes · 09:00–18:00 hrs' },
 ]
 
 export default function TabContacto() {
@@ -125,7 +126,7 @@ export default function TabContacto() {
 
             {/* WhatsApp */}
             <a
-              href="https://wa.me/56996998344?text=Hola%2C%20quiero%20cotizar%20un%20limpiapi%C3%A9s%20personalizado"
+              href={CONTACTO.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -150,22 +151,31 @@ export default function TabContacto() {
             </a>
           </div>
 
-          {/* Columna derecha: dirección */}
+          {/* Columna derecha: mapa */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{
               borderRadius: '8px',
               border: '1px solid rgba(10,22,40,0.08)',
               boxShadow: '0 2px 12px rgba(10,22,40,0.06)',
-              padding: '2rem',
+              overflow: 'hidden',
               backgroundColor: '#FFFFFF',
             }}>
-              <p style={{ fontFamily: 'var(--font-dm-sans)', fontWeight: 600, fontSize: '0.875rem', color: '#0A1628', marginBottom: '0.5rem' }}>
-                Dirección
-              </p>
-              <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.95rem', color: 'rgba(10,22,40,0.65)', lineHeight: 1.6 }}>
-                La Raza #1695, Santiago<br />
-                Lunes a Viernes 09:00–18:00
-              </p>
+              <iframe
+                src="https://maps.google.com/maps?q=La+Raza+1695,+Independencia,+Santiago,+Chile&output=embed"
+                width="100%"
+                height="320"
+                style={{ border: 0, display: 'block' }}
+                loading="lazy"
+                title="Ubicación Garbage — La Raza 1695, Santiago"
+              />
+              <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid rgba(10,22,40,0.06)' }}>
+                <p style={{ fontFamily: 'var(--font-dm-sans)', fontWeight: 600, fontSize: '0.85rem', color: '#0A1628', marginBottom: '2px' }}>
+                  {CONTACTO.direccion}
+                </p>
+                <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.8rem', color: 'rgba(10,22,40,0.55)' }}>
+                  {CONTACTO.horario}
+                </p>
+              </div>
             </div>
           </div>
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import { copy } from '@/lib/copy'
 
@@ -62,10 +63,12 @@ export default function MobileMenu({ isOpen, onClose, onNavClick }: MobileMenuPr
               borderBottom: '1px solid rgba(255,255,255,0.12)',
             }}
           >
-            <img
+            <Image
               src="/images/logo.jpeg"
               alt="Garbage"
-              loading="eager"
+              width={120}
+              height={32}
+              priority
               style={{ height: '32px', width: 'auto', filter: 'brightness(0.9)' }}
             />
             <button

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useTab, TABS } from '@/context/TabContext'
 import { NeonButton } from '@/components/ui/neon-button'
 
@@ -58,10 +59,12 @@ export default function Header() {
             aria-label="Ir al inicio"
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, lineHeight: 0 }}
           >
-            <img
+            <Image
               src="/images/logo.jpeg"
               alt="Garbage Limpiapiés Personalizados Chile"
-              loading="eager"
+              width={140}
+              height={40}
+              priority
               style={{ height: '40px', width: 'auto', display: 'block' }}
             />
           </button>

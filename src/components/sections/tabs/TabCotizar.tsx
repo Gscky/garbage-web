@@ -2,6 +2,7 @@
 
 import { ContactForm } from '@/components/forms/ContactForm'
 import { SectionBanner } from '@/components/ui/section-banner'
+import { CONTACTO } from '@/lib/contact'
 
 function InfoContacto() {
   return (
@@ -50,11 +51,11 @@ function InfoContacto() {
         </h3>
 
         {[
-          { label: 'Teléfonos',  value: '+56 2 2683 6012 / +56 2 2684 1460' },
-          { label: 'WhatsApp',   value: '+56 9 9699 8344 / +56 9 9444 4244' },
-          { label: 'Email',      value: 'ventas@garbage.cl' },
-          { label: 'Dirección',  value: 'La Raza #1695, Santiago' },
-          { label: 'Horario',    value: 'Lun–Vie 09:00–18:00' },
+          { label: 'Teléfonos',  value: CONTACTO.telefonos.join(' / ') },
+          { label: 'WhatsApp',   value: CONTACTO.whatsapp.join(' / ') },
+          { label: 'Email',      value: CONTACTO.email },
+          { label: 'Dirección',  value: CONTACTO.direccion },
+          { label: 'Horario',    value: CONTACTO.horario },
         ].map(({ label, value }) => (
           <div key={label}>
             <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A1628', fontWeight: 700, marginBottom: '0.15rem' }}>
@@ -70,7 +71,7 @@ function InfoContacto() {
 
       {/* WhatsApp */}
       <a
-        href="https://wa.me/56996998344?text=Hola%2C%20quiero%20cotizar%20un%20limpiapi%C3%A9s%20personalizado"
+        href={CONTACTO.whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         style={{

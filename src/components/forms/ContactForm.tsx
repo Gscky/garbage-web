@@ -7,6 +7,7 @@ import { useTab } from '@/context/TabContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion, AnimatePresence } from 'framer-motion'
 import { contactSchema, type ContactFormData, PRODUCTOS } from '@/lib/validations'
+import { CONTACTO } from '@/lib/contact'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -193,7 +194,7 @@ export function ContactForm() {
 
       if (!res.ok || !json.success) {
         setServerError(
-          json.message ?? 'Algo falló al enviar. Intenta de nuevo o llámanos al +56 2 2683 6012.'
+          json.message ?? `Algo falló al enviar. Intenta de nuevo o llámanos al ${CONTACTO.telefonos[0]}.`
         )
         setStatus('error')
         return
@@ -204,7 +205,7 @@ export function ContactForm() {
       reset()
       setLogoFile(null)
     } catch {
-      setServerError('Algo falló al enviar. Intenta de nuevo o llámanos al +56 2 2683 6012.')
+      setServerError(`Algo falló al enviar. Intenta de nuevo o llámanos al ${CONTACTO.telefonos[0]}.`)
       setStatus('error')
     }
   }
