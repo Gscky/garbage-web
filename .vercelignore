@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.DS_Store
+
+# Material de trabajo que no forma parte del sitio
+*.zip
+*.pdf
+app-old

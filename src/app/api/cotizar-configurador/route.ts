@@ -4,12 +4,25 @@ import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { z } from 'zod'
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, '1 h'),
-  analytics: true,
-  prefix: 'garbage_configurador',
-})
+// Si Upstash no está configurado o no responde, el formulario debe seguir
+// funcionando: el rate limit es una protección, no un requisito para enviar.
+const ratelimit = (() => {
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    console.warn('[cotizar-configurador] Upstash no configurado — se envía sin rate limit.')
+    return null
+  }
+  try {
+    return new Ratelimit({
+      redis: Redis.fromEnv(),
+      limiter: Ratelimit.slidingWindow(5, '1 h'),
+      analytics: true,
+      prefix: 'garbage_configurador',
+    })
+  } catch (err) {
+    console.error('[cotizar-configurador] No se pudo inicializar el rate limit:', err)
+    return null
+  }
+})()
 
 const schema = z.object({
   nombre:    z.string().min(2, 'Nombre requerido').max(100),
@@ -34,7 +47,20 @@ export async function POST(request: NextRequest) {
     request.headers.get('x-real-ip') ??
     'unknown'
 
-  const { success: allowed, remaining } = await ratelimit.limit(ip)
+  // Una caída de Upstash no debe bloquear el envío
+  let allowed = true
+  let remaining = 5
+
+  if (ratelimit) {
+    try {
+      const result = await ratelimit.limit(ip)
+      allowed = result.success
+      remaining = result.remaining
+    } catch (err) {
+      console.error('[cotizar-configurador] Rate limit no disponible, se continúa sin límite:', err)
+    }
+  }
+
   if (!allowed) {
     return NextResponse.json(
       { error: 'Demasiados intentos. Espera un momento.' },

@@ -6,12 +6,25 @@ import { contactSchema } from '@/lib/validations'
 
 // ─── Upstash rate limiting (persistente entre deploys) ────────────────────
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, '1 h'),
-  analytics: true,
-  prefix: 'garbage_contact',
-})
+// Si Upstash no está configurado o no responde, el formulario debe seguir
+// funcionando: el rate limit es una protección, no un requisito para enviar.
+const ratelimit = (() => {
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    console.warn('[contact/route] Upstash no configurado — se envía sin rate limit.')
+    return null
+  }
+  try {
+    return new Ratelimit({
+      redis: Redis.fromEnv(),
+      limiter: Ratelimit.slidingWindow(5, '1 h'),
+      analytics: true,
+      prefix: 'garbage_contact',
+    })
+  } catch (err) {
+    console.error('[contact/route] No se pudo inicializar el rate limit:', err)
+    return null
+  }
+})()
 
 // ─── Handler POST ─────────────────────────────────────────────────────────
 
@@ -31,8 +44,19 @@ export async function POST(request: NextRequest) {
     request.headers.get('x-real-ip') ??
     'unknown'
 
-  // Verificar rate limit
-  const { success: allowed, remaining } = await ratelimit.limit(ip)
+  // Verificar rate limit — una caída de Upstash no debe bloquear el envío
+  let allowed = true
+  let remaining = 5
+
+  if (ratelimit) {
+    try {
+      const result = await ratelimit.limit(ip)
+      allowed = result.success
+      remaining = result.remaining
+    } catch (err) {
+      console.error('[contact/route] Rate limit no disponible, se continúa sin límite:', err)
+    }
+  }
 
   if (!allowed) {
     return NextResponse.json(
